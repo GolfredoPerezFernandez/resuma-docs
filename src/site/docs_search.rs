@@ -16,7 +16,7 @@ pub const ENTRIES: &[DocEntry] = &[
     DocEntry {
         title: "Getting Started",
         href: "/docs/getting_started",
-        keywords: "install cli scaffold tutorial template production",
+        keywords: "install cli scaffold tutorial template production deploy fly",
     },
     DocEntry {
         title: "Benchmark",
@@ -31,7 +31,7 @@ pub const ENTRIES: &[DocEntry] = &[
     DocEntry {
         title: "FAQ",
         href: "/docs/faq",
-        keywords: "hydration resumability wasm production ready bundle",
+        keywords: "hydration resumability wasm production ready bundle deploy fly digitalocean copy page nav ai clipboard HtmlTheme Popup skill",
     },
     DocEntry {
         title: "Project structure",
@@ -56,7 +56,7 @@ pub const ENTRIES: &[DocEntry] = &[
     DocEntry {
         title: "CLI",
         href: "/docs/cli",
-        keywords: "resuma new dev build routes doctor static-export update",
+        keywords: "resuma new dev build routes doctor static-export update install skill",
     },
     DocEntry {
         title: "API reference",
@@ -137,6 +137,31 @@ pub const ENTRIES: &[DocEntry] = &[
         title: "Form",
         href: "/docs/components/form",
         keywords: "submit prg progressive enhancement csrf",
+    },
+    DocEntry {
+        title: "Popup",
+        href: "/docs/components/popup",
+        keywords: "popover anchor css position-try menu tooltip HtmlTheme theme switch",
+    },
+    DocEntry {
+        title: "Modal",
+        href: "/docs/components/modal",
+        keywords: "dialog focus trap stack closedby showModal",
+    },
+    DocEntry {
+        title: "GestureView",
+        href: "/docs/components/gesture",
+        keywords: "pan pinch long-press double-tap pwa touch",
+    },
+    DocEntry {
+        title: "Virtual For",
+        href: "/docs/components/virtual_for",
+        keywords: "virtual list window recycle for 10k",
+    },
+    DocEntry {
+        title: "Desktop UI",
+        href: "/docs/components/desktop_ui",
+        keywords: "announce measure presence storage online rtl focus HtmlTheme set_page_dir set_page_theme",
     },
     DocEntry {
         title: "Store",
@@ -326,17 +351,17 @@ pub const ENTRIES: &[DocEntry] = &[
     DocEntry {
         title: "Portals",
         href: "/docs/cookbook/portals",
-        keywords: "modal overlay teleport dom",
+        keywords: "modal overlay teleport dialog popup",
     },
     DocEntry {
         title: "View transitions",
         href: "/docs/cookbook/view_transitions",
-        keywords: "animation page transition css",
+        keywords: "animation page transition css popover skip view-transition",
     },
     DocEntry {
         title: "Theme",
         href: "/docs/cookbook/theme",
-        keywords: "dark mode css variables toggle",
+        keywords: "dark mode css variables toggle HtmlTheme ThemeSwitch data-r-theme data-theme palette",
     },
     DocEntry {
         title: "Streaming loaders",
@@ -354,9 +379,9 @@ pub const ENTRIES: &[DocEntry] = &[
         keywords: "revalidate stale invalidate_href __resuma.invalidate",
     },
     DocEntry {
-        title: "Docker deploy",
-        href: "/docs/cookbook/docker",
-        keywords: "container fly.io production dockerfile",
+        title: "Deploy (Fly, AWS, Cloudflare)",
+        href: "/docs/cookbook/deploy",
+        keywords: "fly.io digitalocean droplet railway render docker production dockerfile hosting paas PORT health trust proxy github actions ha=false cargo_manifest_dir public aws app runner ecs fargate lambda cloudflare workers containers tunnel qwik adapter vercel edge",
     },
     DocEntry {
         title: "Integrations overview",
@@ -391,7 +416,7 @@ pub const ENTRIES: &[DocEntry] = &[
     DocEntry {
         title: "i18n",
         href: "/docs/integrations/i18n",
-        keywords: "translation locale fluent gettext",
+        keywords: "translation locale fluent gettext rtl dir",
     },
     DocEntry {
         title: "Tailwind CSS",
@@ -404,14 +429,14 @@ pub const ENTRIES: &[DocEntry] = &[
         keywords: "open graph social preview meta",
     },
     DocEntry {
-        title: "SEO & GEO",
+        title: "SEO, GEO & AEO",
         href: "/docs/integrations/seo_geo",
-        keywords: "meta pixel json-ld robots llms gptbot analytics",
+        keywords: "seo geo aeo site_url canonical sitemap robots llms gptbot oai-searchbot json-ld faq SeoKit prelude",
     },
     DocEntry {
         title: "AI assistant",
         href: "/docs/integrations/ai_assistant",
-        keywords: "cursor skill mcp codex gemini agent install",
+        keywords: "cursor skill mcp codex gemini agent install HtmlTheme Popup SeoKit --force",
     },
     DocEntry {
         title: "E2E testing",

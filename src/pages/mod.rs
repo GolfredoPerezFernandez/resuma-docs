@@ -9,14 +9,18 @@ pub mod docs {
         pub mod client;
         pub mod context;
         pub mod control_flow;
+        pub mod desktop_ui;
         pub mod effects;
         pub mod error_boundary;
         pub mod form;
+        pub mod gesture;
         pub mod handlers;
         pub mod index;
         pub mod islands;
         pub mod js;
+        pub mod modal;
         pub mod nav_link;
+        pub mod popup;
         pub mod server;
         pub mod signals;
         pub mod slots;
@@ -24,9 +28,11 @@ pub mod docs {
         pub mod tasks;
         pub mod testing;
         pub mod view;
+        pub mod virtual_for;
     }
     pub mod cookbook {
         pub mod debouncer;
+        pub mod deploy;
         pub mod docker;
         pub mod index;
         pub mod loader_invalidation;

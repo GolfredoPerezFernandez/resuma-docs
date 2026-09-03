@@ -10,7 +10,13 @@ pub fn page(_req: FlowRequest) -> View {
             {crate::site::demos::integrations_og_image()}
 
             <h2>"Static default"</h2>
-            <p>"Set " <code>"FlowApp::with_og_image(\"/og.svg\")"</code> " (this docs site). Good for most pages."</p>
+            <p>
+                "Prefer a " <strong>"PNG or JPEG 1200×630"</strong> " at "
+                <code>"public/og.png"</code>
+                " and " <code>"FlowApp::with_og_image(\"/og.png\")"</code>
+                ". Many social crawlers still mishandle SVG. Resuma also serves a built-in "
+                <code>"/og.svg"</code> " if you need a vector fallback."
+            </p>
 
             <h2>"Per-route OG via loader metadata"</h2>
             {code_block(r#"#[load]

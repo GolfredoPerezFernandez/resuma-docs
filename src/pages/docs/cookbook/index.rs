@@ -16,23 +16,23 @@ pub fn page(_req: FlowRequest) -> View {
                 </a>
                 <a href="/docs/cookbook/portals" class="card" style="text-decoration: none;">
                     <h3>"Portals"</h3>
-                    <p>"Render modals into remote DOM targets."</p>
+                    <p>"Teleport only — prefer Modal / Popup for dialogs."</p>
                 </a>
                 <a href="/docs/cookbook/view_transitions" class="card" style="text-decoration: none;">
                     <h3>"View transitions"</h3>
-                    <p>"Animated route changes with the View Transitions API."</p>
+                    <p>"Animated route changes — skipped while a popover is open."</p>
                 </a>
                 <a href="/docs/cookbook/theme" class="card" style="text-decoration: none;">
                     <h3>"Theme"</h3>
-                    <p>"Dark/light tokens via provide_theme."</p>
+                    <p>"HtmlTheme + Popup — live html[data-theme], no hydration."</p>
                 </a>
                 <a href="/docs/cookbook/streaming_loaders" class="card" style="text-decoration: none;">
                     <h3>"Streaming loaders"</h3>
                     <p>"Deferred SSR for slow data."</p>
                 </a>
-                <a href="/docs/cookbook/docker" class="card" style="text-decoration: none;">
-                    <h3>"Docker deploy"</h3>
-                    <p>"Minimal container image for production."</p>
+                <a href="/docs/cookbook/deploy" class="card" style="text-decoration: none;">
+                    <h3>"Deploy"</h3>
+                    <p>"Fly.io, DigitalOcean, AWS, Cloudflare, Docker."</p>
                 </a>
                 <a href="/docs/cookbook/prg" class="card" style="text-decoration: none;">
                     <h3>"PRG pattern"</h3>

@@ -40,6 +40,21 @@ pub fn page(_req: FlowRequest) -> View {
     animation: fade-in 200ms ease;
 }"#)}
 
+            <h2>"Skip when a popover is open"</h2>
+            <p>
+                "Chromium skips the View Transition update callback if a "
+                <code>":popover-open"</code>
+                " or " <code>"dialog[open]"</code>
+                " is on the page. Resuma therefore skips VT in that case, and also on soft "
+                <code>"invalidate"</code>
+                " / " <code>"loader_poll"</code>
+                " (no full-page flash every tick). Do "
+                <strong>"not"</strong>
+                " wrap " <code>"html[data-theme]"</code>
+                " swaps in " <code>"startViewTransition"</code>
+                " — see " <a href="/docs/cookbook/theme">"Theme"</a> "."
+            </p>
+
             <h2>"Fallback"</h2>
             <p>"Browsers without View Transitions support render content normally — no polyfill required."</p>
         </>

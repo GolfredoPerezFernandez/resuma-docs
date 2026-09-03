@@ -60,8 +60,8 @@ pub fn page(_req: FlowRequest) -> View {
                     <p>"Social preview cards."</p>
                 </a>
                 <a href="/docs/integrations/seo_geo" class="card" style="text-decoration: none;">
-                    <h3>"SEO & GEO"</h3>
-                    <p>"Meta Pixel, JSON-LD, robots.txt, llms.txt."</p>
+                    <h3>"SEO, GEO & AEO"</h3>
+                    <p>"SITE_URL, SeoKit, sitemap, llms.txt, answer-ready pages."</p>
                 </a>
                 <a href="/docs/integrations/i18n" class="card" style="text-decoration: none;">
                     <h3>"i18n"</h3>
@@ -73,7 +73,7 @@ pub fn page(_req: FlowRequest) -> View {
             <div class="grid-3">
                 <a href="/docs/integrations/ai_assistant" class="card" style="text-decoration: none;">
                     <h3>"Cursor / Codex skill"</h3>
-                    <p>"One command: resuma install skill — teaches the agent Resuma patterns."</p>
+                    <p>"One command: resuma install skill — view!, HtmlTheme, Popup, SeoKit. Use --force after a CLI upgrade."</p>
                 </a>
             </div>
 

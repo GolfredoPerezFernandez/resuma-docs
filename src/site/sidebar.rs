@@ -2,6 +2,8 @@
 
 use resuma::prelude::*;
 
+use crate::site::DocsCopyNavBtn;
+
 macro_rules! nav {
     ($($href:expr => $label:expr),+ $(,)?) => {
         view! {
@@ -23,10 +25,13 @@ macro_rules! nav {
 
 pub fn doc_sidebar(_active_path: &str) -> View {
     view! {
-        <aside class="docs-sidebar" data-r-nav-exclusive="true">
+        <>
+            {crate::site::browse_docs_chip()}
+        <aside id="docs-browse" class="docs-sidebar" data-r-nav-exclusive="true">
             <form method="get" action="/docs/search" class="docs-search-form">
                 <input type="search" name="q" placeholder="Search docs..." aria-label="Search docs" />
             </form>
+            <DocsCopyNavBtn />
             <div class="docs-sidebar-scroll">
                 <section class="docs-sidebar-section">
                     <h4>"Introduction"</h4>
@@ -87,6 +92,11 @@ pub fn doc_sidebar(_active_path: &str) -> View {
                         "/docs/components/slots" => "Slots",
                         "/docs/components/nav_link" => "NavLink",
                         "/docs/components/form" => "Form",
+                        "/docs/components/popup" => "Popup",
+                        "/docs/components/modal" => "Modal",
+                        "/docs/components/gesture" => "GestureView",
+                        "/docs/components/virtual_for" => "Virtual For",
+                        "/docs/components/desktop_ui" => "Desktop UI",
                         "/docs/components/store" => "Store",
                         "/docs/components/context" => "Context",
                         "/docs/components/tasks" => "Tasks",
@@ -127,6 +137,7 @@ pub fn doc_sidebar(_active_path: &str) -> View {
                         "/docs/integrations/i18n" => "i18n",
                         "/docs/integrations/tailwind" => "Tailwind",
                         "/docs/integrations/og_image" => "OG Image",
+                        "/docs/integrations/seo_geo" => "SEO, GEO & AEO",
                         "/docs/integrations/e2e" => "E2E testing",
                     )}
                 </section>
@@ -142,7 +153,7 @@ pub fn doc_sidebar(_active_path: &str) -> View {
                         "/docs/cookbook/streaming_loaders" => "Streaming loaders",
                         "/docs/cookbook/prg" => "PRG pattern",
                         "/docs/cookbook/loader_invalidation" => "Loader invalidation",
-                        "/docs/cookbook/docker" => "Docker deploy",
+                        "/docs/cookbook/deploy" => "Deploy (Fly, AWS, CF, …)",
                     )}
                 </section>
 
@@ -160,11 +171,12 @@ pub fn doc_sidebar(_active_path: &str) -> View {
                     <h4>"Resources"</h4>
                     <nav class="docs-nav">
                         <a href="https://crates.io/crates/resuma" target="_blank" rel="noopener noreferrer" class="docs-nav-link docs-nav-link--external">"crates.io"</a>
-                        <a href="https://docs.rs/resuma/1.0.2" target="_blank" rel="noopener noreferrer" class="docs-nav-link docs-nav-link--external">"docs.rs"</a>
+                        <a href="https://docs.rs/resuma" target="_blank" rel="noopener noreferrer" class="docs-nav-link docs-nav-link--external">"docs.rs"</a>
                         <a href="https://github.com/GoldevLab/resuma" target="_blank" rel="noopener noreferrer" class="docs-nav-link docs-nav-link--external">"GitHub"</a>
                     </nav>
                 </section>
             </div>
         </aside>
+        </>
     }
 }

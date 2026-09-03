@@ -50,6 +50,14 @@ invalidate_link(nav_anchor_element);
 // Client (after mutation in js!):
 await __resuma.invalidate();"#)}
 
+            <h2>"loader_poll"</h2>
+            <p>
+                "Live dashboards: " <code>"loader_poll(\"/ops\", 8_000)"</code>
+                " re-runs " <code>"#[load]"</code> " on an interval. Ticks skip while the tab is hidden "
+                <strong>"or idle"</strong> " (" <code>"__resuma.presence()"</code> "). See "
+                <a href="/docs/components/desktop_ui">"Desktop UI"</a> "."
+            </p>
+
             <h2>"FlowExtensions for DB"</h2>
             <p>
                 "Use " <code>"FlowApp::with_extension(\"db\", \"ready\")"</code> " so loaders know the pool is initialized. "

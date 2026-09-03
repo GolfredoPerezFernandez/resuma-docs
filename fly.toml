@@ -15,7 +15,10 @@ primary_region = 'iad'
   PORT = '3000'
   RESUMA_PAGES_ROOT = '/app/pages'
   RESUMA_DATA_DIR = '/app/.resuma'
+  CARGO_MANIFEST_DIR = '/app'
   SITE_URL = 'https://resuma-docs.fly.dev'
+  # After a custom domain (fly certs add + DNS): change SITE_URL to that origin and redeploy.
+  # Canonicals, OG, sitemap, and llms.txt all follow SITE_URL. Then 301 the old .fly.dev host.
   RESUMA_ENV = 'production'
   RESUMA_TRUST_PROXY = '1'
   # Fly edge proxies use the fdaa::/16 private network — required by resuma 1.2+.

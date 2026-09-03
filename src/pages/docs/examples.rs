@@ -97,7 +97,7 @@ pub fn page(_req: FlowRequest) -> View {
                 <code>"NavLink"</code> ", " <code>"#[load]"</code> ", " <code>"#[submit]"</code> ", "
                 <code>"#[server]"</code> ", " <code>"#[data]"</code> ", signals, client handlers, redirects, flash messages, and middleware."
             </p>
-            {code_block(r#"cargo install resuma --version 1.0.2 --force
+            {code_block(r#"cargo install resuma --version 1.3.1 --force
 resuma new launchops --template basic
 cd launchops
 

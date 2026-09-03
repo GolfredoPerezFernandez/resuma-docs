@@ -1,3 +1,4 @@
+use crate::site::bundle_sizes;
 use crate::site::code_block;
 use resuma::prelude::*;
 
@@ -77,9 +78,9 @@ pub fn page(_req: FlowRequest) -> View {
     let readme_label = "benchmark/README.md";
 
     let dash = "—";
-    let zero = "0 B";
-    let resuma_init = "907 B";
-    let resuma_first = "5.08 KiB";
+    let zero = bundle_sizes::RESUMA_STATIC;
+    let resuma_init = bundle_sizes::RESUMA_INITIAL;
+    let resuma_first = bundle_sizes::RESUMA_FIRST;
     let qwik_init = "1.96 KiB";
     let qwik_first = "22.32 KiB";
     let htmx_init = "16.21 KiB";
@@ -92,7 +93,7 @@ pub fn page(_req: FlowRequest) -> View {
 
     let loader_js = "loader.js";
     let core_js = "core.js";
-    let loader_plus_core = "loader.js + core.js";
+    let loader_plus_core = "loader.js + core.js + handler chunk";
     let htmx_js = "htmx.min.js";
     let wasm_glue = ".wasm + glue";
     let next_name = "Next.js";
@@ -102,19 +103,21 @@ pub fn page(_req: FlowRequest) -> View {
     let m2 = "Production builds in benchmark/*-counter plus runtime/ for Resuma.";
     let m3 = "Report minified raw + gzip + brotli from build artifacts (simulated compression in run.mjs).";
     let m4 = "Initial load = JS required before the page can resume/hydrate interactivity.";
-    let m5 = "First interaction = total JS transferred when the user clicks + (includes lazy chunks where applicable).";
+    let m5 = "First interaction = total JS transferred when the user clicks + (loader + core + handler chunk for Resuma).";
     let m6 = "Regenerate anytime: node benchmark/run.mjs -> benchmark/results.json.";
 
     let why_title = "Why initial = first click for most rows";
     let why_body = "Classic hydration (SvelteKit, SolidStart, Astro client:load, React SPA, Leptos, Next counter) ships all client JS referenced by the HTML on first paint. There is no lazy split on click, so both columns show the same total. Only Resuma and Qwik defer meaningful runtime work until first interaction.";
 
     let caveat_title = "Scaffold caveat";
+    let chrome_title = "This docs site is not the 0 B row";
+    let chrome_body = "The 0 B column is a Resuma page with no signals, handlers, NavLink, or PWA. This documentation site always ships loader.js because the shell uses NavLink, a theme picker, view transitions, and PWA registration — plus a visible_task on /docs layouts. That chrome is separate from the counter benchmark.";
     let caveat_body = "Our Next counter uses the default create-next-app scaffold (App Router, Tailwind, Geist fonts, Turbopack chunks). That is an honest out-of-the-box number, not a lean production baseline. Optimized App Router setups often report 67-78 KiB first-load JS when Server Components eliminate most client bundles. Treat 142 KiB as upper-bound for default tooling, not a tuned app.";
 
     let validation_body = "Independent published measurements agree with our numbers (same ranking, same order of magnitude). Qwik preloader ~2 KiB, HTMX ~16 KiB, Astro React client ~59 KiB, React 19 Vite ~59 KiB, SvelteKit ~32 KiB in the SendOT portfolio series - all line up with our counter benchmark.";
     let validation_link = "Full reference table with links in the repo README. Next.js 142 KiB reflects the default create-next-app scaffold; optimized App Router apps often land near 67-78 KiB first-load JS.";
 
-    let t1 = "Resuma: 907 B gzip initial, 5.08 KiB gzip to full interactivity - no WASM, lazy core on first click.";
+    let t1 = "Resuma: 1021 B gzip initial, 9.90 KiB gzip to full interactivity (loader + core + counter handler) - no WASM, lazy core on first click.";
     let t2 = "Qwik: smallest resumable JS preloader (~2 KiB gzip), core chunk adds ~20 KiB gzip on first click.";
     let t3 = "templ + HTMX: ~16 KiB gzip for HTMX alone; interactivity is a server round-trip, not client hydration.";
     let t4 = "SolidStart / SvelteKit: mid-tier hydration bundles (~17-28 KiB gzip) for a minimal counter.";
@@ -182,6 +185,9 @@ cargo run -p example-counter"#;
             <h3>{caveat_title.to_string()}</h3>
             <p>{caveat_body.to_string()}</p>
 
+            <h3>{chrome_title.to_string()}</h3>
+            <p>{chrome_body.to_string()}</p>
+
             <h2>{h_validation.to_string()}</h2>
             <p>{validation_body.to_string()}</p>
             <p>
@@ -225,9 +231,10 @@ cargo run -p example-counter"#;
                     </tr>
                 </thead>
                 <tbody>
-                    {runtime_row(loader_js, "Interactive pages only", "1.84 KiB", resuma_init, "749 B", true)}
-                    {runtime_row(core_js, "First interaction", "11.67 KiB", "4.20 KiB", "3.71 KiB", true)}
-                    {runtime_row("Static docs page", "Never", zero, zero, zero, true)}
+                    {runtime_row(loader_js, "Interactive pages only", bundle_sizes::LOADER_RAW, resuma_init, bundle_sizes::LOADER_BROTLI, true)}
+                    {runtime_row(core_js, "First interaction", bundle_sizes::CORE_RAW, bundle_sizes::CORE_GZIP, bundle_sizes::CORE_BROTLI, true)}
+                    {runtime_row("Counter handler", "First click (with core)", "133 B", "129 B", "109 B", false)}
+                    {runtime_row("Static Resuma page", "Never (no handlers/signals)", zero, zero, zero, true)}
                 </tbody>
             </table>
 

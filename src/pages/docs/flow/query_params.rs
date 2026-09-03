@@ -50,8 +50,9 @@ async fn search_results(req: &FlowRequest) -> Result<Vec<Item>, LoaderError> {
     }));
 }}"#)}
             <p>
-                <strong>"Use " <code>"event.target"</code> ", not " <code>"event.currentTarget"</code> "."</strong>
-                " In async handlers, " <code>"currentTarget"</code> " is often null."
+                "Read the control from " <code>"event.target"</code> " (the input that fired "
+                <code>"change"</code> "). " <code>"event.currentTarget"</code> " is the element "
+                "that declared the handler — the same node when the handler sits on the input."
             </p>
 
             <h3>"Rust helpers"</h3>

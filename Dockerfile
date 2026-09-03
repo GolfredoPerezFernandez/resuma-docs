@@ -26,6 +26,7 @@ RUN apt-get update \
 WORKDIR /app
 COPY --from=builder /app/target/release/website /app/website
 COPY --from=builder /app/src/pages /app/pages
+COPY public ./public
 RUN chown -R resuma:resuma /app
 
 USER resuma
@@ -33,6 +34,7 @@ USER resuma
 ENV HOST=0.0.0.0
 ENV PORT=3000
 ENV RESUMA_PAGES_ROOT=/app/pages
+ENV CARGO_MANIFEST_DIR=/app
 ENV RESUMA_ENV=production
 ENV RESUMA_TRUST_PROXY=1
 

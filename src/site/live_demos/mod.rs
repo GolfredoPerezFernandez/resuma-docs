@@ -206,6 +206,41 @@ pub fn components_control_flow() -> View {
     )
 }
 
+pub fn components_popup() -> View {
+    live_demo(
+        "<Popup> anchored",
+        PopupWidget::render(PopupWidgetProps::default()),
+    )
+}
+
+pub fn components_modal() -> View {
+    live_demo(
+        "<Modal> focus trap",
+        ModalWidget::render(ModalWidgetProps::default()),
+    )
+}
+
+pub fn components_gesture() -> View {
+    live_demo(
+        "<GestureView>",
+        GestureWidget::render(GestureWidgetProps::default()),
+    )
+}
+
+pub fn components_virtual_for() -> View {
+    live_demo(
+        "<For virtual>",
+        VirtualForWidget::render(VirtualForWidgetProps::default()),
+    )
+}
+
+pub fn components_desktop_ui() -> View {
+    live_demo(
+        "__resuma.announce / measure",
+        DesktopUiWidget::render(DesktopUiWidgetProps::default()),
+    )
+}
+
 pub fn components_signals() -> View {
     live_demo(
         "signal()",
@@ -563,8 +598,8 @@ pub fn cookbook_debouncer() -> View {
 
 pub fn cookbook_portals() -> View {
     live_demo(
-        "portal()",
-        PortalWidget::render(PortalWidgetProps::default()),
+        "<Modal> (prefer over portal())",
+        ModalWidget::render(ModalWidgetProps::default()),
     )
 }
 
@@ -679,7 +714,7 @@ pub fn reference_package() -> View {
     live_info(
         "Install",
         view! {
-            <p><code>"cargo add resuma@1.2.0"</code> " · " <a href="https://crates.io/crates/resuma" target="_blank">"crates.io"</a></p>
+            <p><code>"cargo add resuma@1.3.1"</code> " · " <a href="https://crates.io/crates/resuma" target="_blank">"crates.io"</a></p>
         },
     )
 }
@@ -701,7 +736,7 @@ pub fn reference_api() -> View {
     live_info(
         "docs.rs",
         view! {
-            <p><a href="https://docs.rs/resuma/1.2.0" target="_blank">"docs.rs/resuma"</a> " — full Rust API reference."</p>
+            <p><a href="https://docs.rs/resuma" target="_blank">"docs.rs/resuma"</a> " — full Rust API reference."</p>
         },
     )
 }

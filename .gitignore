@@ -4,3 +4,4 @@ Cargo.lock
 .cargo/config.toml
 node_modules/
 static/client/
+.resuma/

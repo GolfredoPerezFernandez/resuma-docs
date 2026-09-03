@@ -172,7 +172,7 @@ async fn users(req: &FlowRequest) -> Vec<User> {
             <p>
                 "Attach " <a href="https://fly.io/docs/postgres/" target="_blank">"Fly Postgres"</a> " and set "
                 <code>"DATABASE_URL"</code> " as a secret. Call " <code>"init_db().await"</code> " before "
-                <code>"FlowApp::serve()"</code> ". See " <a href="/docs/cookbook/docker">"Docker deploy"</a> "."
+                <code>"FlowApp::serve()"</code> ". See " <a href="/docs/cookbook/deploy">"Deploy"</a> "."
             </p>
 
             <p>

@@ -54,6 +54,20 @@ view! {
     </ul>
 }"#)}
 
+            <h2>"Virtual lists"</h2>
+            <p>
+                "For thousands of rows, add " <code>"virtual"</code>
+                " so only a window is painted — see "
+                <a href="/docs/components/virtual_for">"Virtual For"</a> "."
+            </p>
+            {code_block(r#"view! {
+    <div data-r-virtual-scroller="true" style="height: 24rem; overflow: auto">
+        <For each={jobs} key="id" virtual itemHeight={48} let:job>
+            <div>{job.title.clone()}</div>
+        </For>
+    </div>
+}"#)}
+
             <h2>"Loaders and boundaries"</h2>
             <p>
                 "For async data, prefer " <code>"load_boundary"</code> " over manual "

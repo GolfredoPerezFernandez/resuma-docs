@@ -113,20 +113,21 @@ FlowApp::new()
 
             <h2>"Fly.io"</h2>
             <p>
-                "Production deploy guide (Dockerfile, "
-                <code>"fly.toml"</code> ", health checks): "
-                <a href="/docs/cookbook/docker">"Docker deploy cookbook"</a>". "
-                "This repo ships a working config at the workspace root — live at "
+                "Production deploy (Fly, DigitalOcean, Docker): "
+                <a href="/docs/cookbook/deploy">"Deploy cookbook"</a>". "
+                "This repo ships a working Fly config at the workspace root — live at "
                 <a href="https://resuma-docs.fly.dev/" target="_blank">"resuma-docs.fly.dev"</a>"."
             </p>
             {code_block(r#"# fly.toml [env] — minimum for production
 RESUMA_ENV = "production"
 RESUMA_TRUST_PROXY = "1"
+RESUMA_TRUSTED_PROXY_CIDRS = "fdaa::/16"
 SITE_URL = "https://your-app.fly.dev"
 HOST = "0.0.0.0"
-PORT = "3000"
+PORT = "8080"
 
 [http_service]
+  internal_port = 8080
   force_https = true"#)}
 
             <h2>"Security checklist before deploy"</h2>

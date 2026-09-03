@@ -7,7 +7,8 @@ pub fn page(_req: FlowRequest) -> View {
             <h1>"HTTP API Reference"</h1>
             <p class="lead">
                 "Built-in endpoints on every Resuma and Flow app. Flow also serves "
-                <code>"/robots.txt"</code> " and " <code>"/sitemap.xml"</code>"."
+                <code>"/robots.txt"</code> ", " <code>"/sitemap.xml"</code>
+                ", and " <code>"/llms.txt"</code> " when " <code>"SeoKit"</code> " is set."
             </p>
 
             {crate::site::demos::reference_api()}
@@ -32,6 +33,21 @@ pub fn page(_req: FlowRequest) -> View {
                         <td><code>"GET"</code></td>
                         <td><code>"/_resuma/runtime.js"</code></td>
                         <td>"Legacy combined loader and core."</td>
+                    </tr>
+                    <tr>
+                        <td><code>"GET"</code></td>
+                        <td><code>"/_resuma/ui.js"</code></td>
+                        <td>"Lazy overlay fallback (Safari popover/dialog, gestures, virtual For). Not in the loader."</td>
+                    </tr>
+                    <tr>
+                        <td><code>"GET"</code></td>
+                        <td><code>"/_resuma/ui.css"</code></td>
+                        <td>"Popup / dialog fallback styles."</td>
+                    </tr>
+                    <tr>
+                        <td><code>"GET"</code></td>
+                        <td><code>"/_resuma/flow.js"</code></td>
+                        <td>"Lazy Flow widgets (graph, event stream, ops dashboard)."</td>
                     </tr>
                     <tr>
                         <td><code>"GET"</code></td>
@@ -118,6 +134,11 @@ X-Resuma-CSRF: <token>
                         <td><code>"GET"</code></td>
                         <td><code>"/sitemap.xml"</code></td>
                         <td>"XML sitemap from Flow SEO config"</td>
+                    </tr>
+                    <tr>
+                        <td><code>"GET"</code></td>
+                        <td><code>"/llms.txt"</code></td>
+                        <td>"GEO summary for assistants (" <code>"SeoKit"</code> ")"</td>
                     </tr>
                 </tbody>
             </table>

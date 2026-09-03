@@ -79,10 +79,11 @@ bootClientComponent('hero-particles', initHeroParticles);"#)}
 
 FlowApp::new()
     .client_asset("hero-particles", include_bytes!("../static/client/hero-particles.js"))
-    // …
     .page("/", || view! {
         {client_component(
-            ClientComponent::new("hero-particles").class("hero-particles")
+            ClientComponent::new("hero-particles")
+                .class("hero-particles")
+                .lazy(true)
         )}
     })"#)}
 
@@ -98,7 +99,7 @@ cargo run"#)}
             <p>"Optional props via " <code>"ClientComponent::props(...)"</code> " → " <code>"data-r-client-props"</code> " JSON on the root element."</p>
 
             <h2>"Live example"</h2>
-            <p>"This docs site uses " <code>"hero-particles"</code> " on the " <a href="/">"home page"</a> " — WebGPU particles with WebGL fallback, built from TypeScript in " <code>"client/components/hero-particles.ts"</code> "."</p>
+            <p>"This docs site uses " <code>"hero-particles"</code> " on the " <a href="/">"home page"</a> " with " <code>".lazy(true)"</code> " — the Three.js bundle waits for idle so it does not compete with LCP. WebGPU with WebGL fallback, from " <code>"client/components/hero-particles.ts"</code> "."</p>
 
             <h2>"See also"</h2>
             <ul>

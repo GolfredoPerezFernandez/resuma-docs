@@ -7,15 +7,19 @@ use axum::routing::post;
 use pages::PagesRegistry;
 use resuma::current_request;
 use resuma::prelude::*;
+use site::DocsCopyPageToolbar;
 
 #[layout("/")]
 fn SiteLayout() -> View {
+    site::apply_page_seo();
+    site::provide_docs_theme();
     let vt = site::view_transition_name(
         &current_request()
             .map(|r| r.path)
             .unwrap_or_else(|| "/".into()),
     );
     view! {
+        {site::skip_link()}
         <header class="site-header">
             <div class="header-inner">
                 <a href="/" class="logo">
@@ -30,22 +34,26 @@ fn SiteLayout() -> View {
                     <NavLink href="/docs/benchmark" activeClass="active" exact=true>"Benchmark"</NavLink>
                 </nav>
                 <div class="header-actions">
+                    {site::explore_nav()}
+                    {site::docs_search_modal()}
+                    {site::theme_picker()}
                     <a href="/docs/getting_started" class="btn btn-ghost">"Get Started"</a>
-                    <a href="https://docs.rs/resuma/1.2.0" class="btn btn-ghost" target="_blank">"docs.rs"</a>
-                    <a href="https://crates.io/crates/resuma" class="btn btn-ghost" target="_blank">"crates.io"</a>
+                    <a href="https://docs.rs/resuma" class="btn btn-ghost docs-rs-link" target="_blank">"docs.rs"</a>
+                    <a href="https://crates.io/crates/resuma" class="btn btn-ghost crates-link" target="_blank">"crates.io"</a>
                     <a href="https://github.com/GoldevLab/resuma" class="btn btn-primary">"GitHub"</a>
                 </div>
             </div>
         </header>
         {with_view_transition(vt, vec![Child::View(view! { <Slot /> })])}
         <footer class="site-footer">
-            <p>"Made with ❤️ by the Resuma team · MIT License"</p>
+            <p>"Made with Rust · resumable SSR · MIT License"</p>
             <div class="site-footer-links">
                 <a href="https://crates.io/crates/resuma" target="_blank">"crates.io"</a>
-                <a href="https://docs.rs/resuma/1.2.0" target="_blank">"docs.rs"</a>
+                <a href="https://docs.rs/resuma" target="_blank">"docs.rs"</a>
                 <a href="/docs/package">"Install guide"</a>
                 <a href="/docs/architecture">"Architecture"</a>
                 <a href="/docs/benchmark">"Benchmarks"</a>
+                <a href="/docs/cookbook/theme">"Theming"</a>
                 <a href="https://github.com/GoldevLab/resuma" target="_blank">"GitHub"</a>
             </div>
         </footer>
@@ -64,7 +72,7 @@ fn DocsLayout() -> View {
         async (_state, __resuma) => {
             const load = async () => {
                 try {
-                    const mod = await import('/static/client/docs-copy.js');
+                    const mod = await import('/static/client/docs-copy.js?v=1.3.1');
                     mod.initDocsCopy?.();
                     mod.initDocsSidebar?.();
                     mod.initCacheDemo?.();
@@ -87,7 +95,8 @@ fn DocsLayout() -> View {
                 <div class="liquid-blob liquid-blob-c"></div>
             </div>
             {site::doc_sidebar(&path)}
-            <main class="docs-main">
+            <main id="main-content" class="docs-main">
+                <DocsCopyPageToolbar />
                 {with_view_transition(vt, vec![Child::View(view! { <Slot /> })])}
             </main>
             <div id="modals"></div>
@@ -105,15 +114,25 @@ async fn main() -> std::io::Result<()> {
 
     let site_url = site::site_url();
     let json_ld = site::json_ld(&site_url);
+    let public_dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("public");
 
     FlowApp::new()
         .with_title(site::site_title())
         .with_description(site::site_description())
-        .with_site_url(site_url)
-        .with_og_image("/og.svg")
+        .with_site_url(site_url.clone())
+        .with_og_image("/og.png")
         .with_json_ld(json_ld)
+        .with_seo_kit(site::seo_kit(&site_url))
+        .with_sitemap_exclude(["/docs/cookbook/docker", "/docs/search"])
+        .with_public_dir(public_dir)
+        .with_html_theme(
+            HtmlTheme::new(["paper", "slate", "midnight", "ember", "aurora", "forest"])
+                .dark(["midnight", "ember", "aurora", "forest"])
+                .cookie(site::THEME_COOKIE)
+                .storage_key("resuma-docs-theme"),
+        )
         .with_pwa(site::pwa_config())
-        .with_head(site::SITE_CSS)
+        .with_head(site::site_head())
         .client_asset(
             "hero-particles",
             include_bytes!("../static/client/hero-particles.js"),

@@ -9,7 +9,12 @@ pub fn page(req: FlowRequest) -> View {
     view! {
         <>
             <h1>"Search docs"</h1>
-            <p class="lead">"Server-side search — no client JavaScript required."</p>
+            <p class="lead">
+                "Server-side search — no client JavaScript required. The header "
+                <strong>"Search"</strong> " button is a "
+                <code>"&lt;Modal&gt;"</code>
+                " (" <kbd>"/"</kbd> " from any page)."
+            </p>
             <form method="get" action="/docs/search" class="docs-search-form">
                 <input
                     type="search"

@@ -5,7 +5,7 @@ pub fn page(_req: FlowRequest) -> View {
     view! {
         <>
             <h1>"Components"</h1>
-            <p class="lead">"Author UI with the view! macro, signals, and slots — components only execute on the server."</p>
+            <p class="lead">"Author UI with the view! macro, signals, and slots — components only execute on the server. Popup, Modal, and HtmlTheme are first-class Rust tags, not a JS overlay kit."</p>
 
             {crate::site::demos::components_overview()}
 
@@ -58,6 +58,26 @@ pub fn page(_req: FlowRequest) -> View {
                 <a href="/docs/components/form" class="card" style="text-decoration: none;">
                     <h3>"Form"</h3>
                     <p>"Progressive-enhancement form submits."</p>
+                </a>
+                <a href="/docs/components/popup" class="card" style="text-decoration: none;">
+                    <h3>"Popup"</h3>
+                    <p>"Anchored popover — CSS flip, no JS layout loop."</p>
+                </a>
+                <a href="/docs/components/modal" class="card" style="text-decoration: none;">
+                    <h3>"Modal"</h3>
+                    <p>"Stacked dialog, focus trap, announce."</p>
+                </a>
+                <a href="/docs/components/gesture" class="card" style="text-decoration: none;">
+                    <h3>"GestureView"</h3>
+                    <p>"Pan, pinch, long-press for PWAs."</p>
+                </a>
+                <a href="/docs/components/virtual_for" class="card" style="text-decoration: none;">
+                    <h3>"Virtual For"</h3>
+                    <p>"Windowed lists for 10k-row tables."</p>
+                </a>
+                <a href="/docs/components/desktop_ui" class="card" style="text-decoration: none;">
+                    <h3>"Desktop UI"</h3>
+                    <p>"announce, measure, presence, storage, RTL."</p>
                 </a>
                 <a href="/docs/components/store" class="card" style="text-decoration: none;">
                     <h3>"Store"</h3>

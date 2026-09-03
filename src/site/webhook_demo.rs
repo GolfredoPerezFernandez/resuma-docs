@@ -137,6 +137,7 @@ fn demo_graph_snapshot() -> GraphSnapshot {
         }],
         edges: vec![],
         status: GraphStatus::Done,
+        progress: 100,
     }
 }
 

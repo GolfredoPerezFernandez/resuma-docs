@@ -1,6 +1,6 @@
 use resuma::prelude::*;
 
-use crate::site::{doc_link_card, learn_path_card, metric_item};
+use crate::site::{bundle_sizes, doc_link_card, learn_path_card, metric_item};
 
 pub fn page(_req: FlowRequest) -> View {
     view! {
@@ -8,8 +8,11 @@ pub fn page(_req: FlowRequest) -> View {
             <header class="docs-hero">
                 <h1>"Documentation"</h1>
                 <p class="docs-hero-lead">
-                    "Resumable SSR in Rust — components, server actions, full-stack Flow, production security, and deploy guides. One "
-                    <code>"cargo install resuma"</code> " for core + Flow + CLI."
+                    "Resumable SSR in Rust — components, server actions, full-stack Flow, jobs, and security. "
+                    "One " <code>"cargo install resuma"</code> " for UI + APIs + CLI. "
+                    <strong>"Theme"</strong> " is a live " <code>"&lt;Popup&gt;"</code>
+                    ", " <strong>"Search"</strong> " is a " <code>"&lt;Modal&gt;"</code>
+                    " (" <kbd>"/"</kbd> "). Instant restyle, no hydration."
                 </p>
                 <form method="get" action="/docs/search" class="docs-search-hero">
                     <input type="search" name="q" placeholder="Search docs…" aria-label="Search documentation" />
@@ -17,16 +20,19 @@ pub fn page(_req: FlowRequest) -> View {
                 </form>
                 <div class="docs-quick-links">
                     <a href="/docs/getting_started">"Getting started"</a>
+                    <a href="/docs/cookbook/theme">"Theme"</a>
+                    <a href="/docs/integrations/ai_assistant">"AI skill"</a>
+                    <a href="/docs/cookbook/deploy">"Deploy"</a>
                     <a href="/docs/benchmark">"Benchmark"</a>
                     <a href="/docs/examples">"Examples"</a>
-                    <a href="https://docs.rs/resuma/1.0.2" target="_blank">"API (docs.rs)"</a>
+                    <a href="https://docs.rs/resuma" target="_blank">"API (docs.rs)"</a>
                     <a href="https://github.com/GoldevLab/resuma" target="_blank">"GitHub"</a>
                 </div>
             </header>
 
             <div class="docs-stat-strip">
-                {metric_item("907 B", "initial JS (gzip)")}
-                {metric_item("5.08 KiB", "first interaction")}
+                {metric_item(bundle_sizes::RESUMA_INITIAL, "initial JS (gzip)")}
+                {metric_item(bundle_sizes::RESUMA_FIRST, "first interaction")}
                 {metric_item("0 B", "static pages")}
                 {metric_item("1 crate", "core + Flow + CLI")}
             </div>
@@ -89,7 +95,7 @@ pub fn page(_req: FlowRequest) -> View {
                 {doc_link_card(
                     "/docs/components",
                     "Components",
-                    "view!, signals, handlers, islands, server actions, js!.",
+                    "view!, Popup, Modal, HtmlTheme, signals, islands.",
                     "",
                 )}
                 {doc_link_card(
@@ -113,13 +119,13 @@ pub fn page(_req: FlowRequest) -> View {
                 {doc_link_card(
                     "/docs/cookbook",
                     "Cookbook",
-                    "Theme, portals, streaming loaders, Docker deploy.",
+                    "Theme, portals, streaming loaders, Fly and DigitalOcean deploy.",
                     "",
                 )}
                 {doc_link_card(
                     "/docs/integrations",
                     "Integrations",
-                    "SQLx, Turso, auth, Tailwind, i18n, E2E testing.",
+                    "AI skill, SQLx, Turso, auth, Tailwind, SEO/GEO.",
                     "",
                 )}
                 {doc_link_card(
@@ -152,7 +158,7 @@ pub fn page(_req: FlowRequest) -> View {
             <p>
                 "Components run once on the server. SSR embeds signals and handler references in HTML; "
                 "a "
-                <strong>"907 B"</strong>
+                <strong>{bundle_sizes::LOADER_GZIP.to_string()}</strong>
                 " gzip loader resumes interactivity on first click — no hydration, no WASM bundle by default."
             </p>
             <p>
@@ -169,7 +175,7 @@ pub fn page(_req: FlowRequest) -> View {
                 "Published on "
                 <a href="https://crates.io/crates/resuma" target="_blank">"crates.io"</a>
                 " · "
-                <a href="https://docs.rs/resuma/1.0.2" target="_blank">"docs.rs"</a>
+                <a href="https://docs.rs/resuma" target="_blank">"docs.rs"</a>
                 " · benchmark source in the "
                 <a href="https://github.com/GoldevLab/resuma/tree/main/benchmark" target="_blank">"GitHub repo"</a>"."
             </p>

@@ -32,6 +32,25 @@ pub fn page(_req: FlowRequest) -> View {
     }
 }"#)}
 
+            <h2>"RTL layout"</h2>
+            <p>
+                "Strings from Fluent are not enough — flex and margins must flip. Set "
+                <code>"<html dir>"</code> " and use logical CSS:"
+            </p>
+            {code_block(r#"FlowApp::new().with_dir("rtl")
+
+#[load]
+async fn i18n(req: &FlowRequest) -> Messages {
+    let lang = req.query_param("lang").unwrap_or("en");
+    if lang.starts_with("ar") || lang.starts_with("he") {
+        set_page_dir("rtl");
+    }
+    Messages::load(lang).await
+}
+
+/* CSS */
+.card { margin-inline-start: 1rem; padding-inline: 1rem; }"#)}
+
             <h2>"URL strategy"</h2>
             <p><code>"/en/docs"</code> ", " <code>"/es/docs"</code> " via Flow file routes or " <code>"?lang=es"</code> " query param with " <code>"#[load]"</code> " cache keys per locale."</p>
         </>

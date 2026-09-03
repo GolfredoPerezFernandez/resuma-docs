@@ -63,7 +63,7 @@ fn exec_showcase_demo_view(mode: ExecDemoMode) -> View {
                     class="btn btn-primary"
                     id="exec-start-btn"
                     onClick={js!(async () => {
-                        const m = await import("/static/client/docs-flow-worker.js?v=1.2.14");
+                        const m = await import("/static/client/docs-flow-worker.js?v=1.3.1");
                         await m.runDocsFlowWorker("exec");
                     })}
                 >

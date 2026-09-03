@@ -697,7 +697,7 @@ pub fn DeployInfoWidget() -> View {
     );
     view! {
         <>
-            <p class="demo-muted">"Live process env — same vars you set in Docker / Fly " <code>"fly.toml"</code>"."</p>
+            <p class="demo-muted">"Live process env — same vars you set on Fly, DigitalOcean, or Docker."</p>
             <button type="button" class="btn btn-sm" onClick={js!(async () => {
                 const res = await __resuma.safeAction("docs_deploy_info", []);
                 state.payload.set(res.ok ? JSON.stringify(res.value, null, 2) : res.error);
@@ -727,7 +727,7 @@ pub fn CacheControlWidget() -> View {
             </dl>
             <div class="demo-row">
                 <button type="button" class="btn btn-sm" onClick={js!(async () => {
-                    const mod = await import("/static/client/docs-copy.js");
+                    const mod = await import("/static/client/docs-copy.js?v=1.3.1");
                     await mod.refreshCacheDemo?.();
                 })}>"Refresh headers"</button>
                 <button type="button" class="btn btn-sm btn-ghost" onClick={js!(async () => {
@@ -795,6 +795,88 @@ pub fn PipelineWidget() -> View {
                     state.label.set("1. SSR render");
                 }}>"Reset"</button>
             </div>
+        </>
+    }
+}
+
+#[component]
+pub fn PopupWidget() -> View {
+    view! {
+        <Popup id="docs-menu" positions="bottom right top left">
+            <button slot="anchor" type="button" class="btn btn-sm">"Open menu"</button>
+            <div class="demo-popup-panel">
+                <p>"Follows the button (CSS anchor). Flip: bottom → right → top → left."</p>
+                <a href="/docs/components/modal">"Modal docs"</a>
+            </div>
+        </Popup>
+    }
+}
+
+#[component]
+pub fn ModalWidget() -> View {
+    view! {
+        <Modal id="docs-confirm">
+            <button slot="trigger" type="button" class="btn btn-sm">"Open dialog"</button>
+            <div>
+                <h4>"Stacked modal"</h4>
+                <p>"ESC and backdrop dismiss. Focus returns to this trigger."</p>
+                <form method="dialog">
+                    <button type="submit" class="btn btn-sm">"Close"</button>
+                </form>
+            </div>
+        </Modal>
+    }
+}
+
+#[component]
+pub fn GestureWidget() -> View {
+    let msg = signal("Pan, pinch, long-press, double-tap, or scroll-wheel.".to_string());
+    view! {
+        <>
+            <GestureView
+                preferredPan="horizontal"
+                panThreshold={10}
+                class="demo-gesture-pad"
+                onPan={js! { state.msg.set("pan " + Math.round(event.detail.dx) + "," + Math.round(event.detail.dy)); }}
+                onLongPress={js! { state.msg.set("long-press"); }}
+                onDoubletap={js! { state.msg.set("double-tap"); }}
+                onPinch={js! { state.msg.set("pinch " + event.detail.scale.toFixed(2)); }}
+                onScrollwheel={js! { state.msg.set("wheel"); }}
+            >
+                <p class="demo-output">{msg}</p>
+            </GestureView>
+        </>
+    }
+}
+
+#[component]
+pub fn VirtualForWidget() -> View {
+    let rows = signal((0..400).map(|i| format!("Row {i}")).collect::<Vec<_>>());
+    view! {
+        <div data-r-virtual-scroller="true" class="demo-virtual-scroller">
+            <For each={rows} virtual itemHeight={36} overscan={4} let:label>
+                <div class="demo-virtual-row">{label.clone()}</div>
+            </For>
+        </div>
+    }
+}
+
+#[component]
+pub fn DesktopUiWidget() -> View {
+    let info = signal(String::new());
+    view! {
+        <>
+            <div class="demo-row">
+                <button type="button" class="btn btn-sm" onClick={js! {
+                    __resuma.announce("Saved");
+                    state.info.set("announced + online=" + __resuma.online() + " idle=" + __resuma.presence().idle);
+                }}>"Announce"</button>
+                <button type="button" class="btn btn-sm" onClick={js! {
+                    const m = __resuma.measure(event.currentTarget);
+                    state.info.set(m ? ("w=" + Math.round(m.width)) : "no layout");
+                }}>"Measure"</button>
+            </div>
+            <p class="demo-output">{info}</p>
         </>
     }
 }

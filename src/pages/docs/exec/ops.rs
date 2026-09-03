@@ -36,7 +36,7 @@ RESUMA_METRICS_PUBLIC=0"#)}
                 "Resuma stores rate-limit counters, exec queues, scheduler jobs, and graph checkpoints on disk — "
                 "no Redis. On Fly: " <code>"fly volumes create resuma_data --size 1"</code> " and mount at "
                 <code>"/data/resuma"</code> " in " <code>"fly.toml"</code>". "
-                "See " <a href="/docs/cookbook/docker">"Docker deploy"</a> "."
+                "See " <a href="/docs/cookbook/deploy">"Deploy"</a> "."
             </p>
 
             <h2>"Dashboard"</h2>
@@ -70,7 +70,7 @@ RESUMA_METRICS_PUBLIC=0"#)}
             </p>
 
             <h2>"Deploy"</h2>
-            <p>"See " <a href="/docs/cookbook/docker">"Cookbook → Docker"</a> " and the "
+            <p>"See " <a href="/docs/cookbook/deploy">"Cookbook → Deploy"</a> " and the "
                 <code>"templates/production"</code> " scaffold (" <code>"resuma new --template production"</code> ")."</p>
 
             <p><a href="/docs/exec">"← Resuma OS overview"</a></p>

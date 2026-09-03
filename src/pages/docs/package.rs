@@ -36,7 +36,7 @@ pub fn page(_req: FlowRequest) -> View {
             </ul>
             <p>"Users depend on a single crate:"</p>
             {code_block(r#"[dependencies]
-resuma = "1.0.2"
+resuma = "1.3.1"
 tokio  = { version = "1", features = ["full"] }"#)}
 
             <p>"Everything re-exports through " <code>"resuma::prelude"</code>":"</p>
@@ -78,12 +78,12 @@ resuma routes --generate --path src/pages   # Flow apps only"#)}
                     <tr>
                         <td><code>"resuma"</code></td>
                         <td><a href="https://crates.io/crates/resuma" target="_blank">"crates.io/crates/resuma"</a></td>
-                        <td><a href="https://docs.rs/resuma/1.0.2" target="_blank">"docs.rs/resuma"</a></td>
+                        <td><a href="https://docs.rs/resuma" target="_blank">"docs.rs/resuma"</a></td>
                     </tr>
                     <tr>
                         <td><code>"resuma-macros"</code></td>
                         <td><a href="https://crates.io/crates/resuma-macros" target="_blank">"crates.io/crates/resuma-macros"</a></td>
-                        <td><a href="https://docs.rs/resuma-macros/1.0.2" target="_blank">"docs.rs/resuma-macros"</a></td>
+                        <td><a href="https://docs.rs/resuma-macros" target="_blank">"docs.rs/resuma-macros"</a></td>
                     </tr>
                 </tbody>
             </table>

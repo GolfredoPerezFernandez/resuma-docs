@@ -14,7 +14,7 @@ pub fn page(_req: FlowRequest) -> View {
 
             <h2>"Cargo.toml"</h2>
             {code_block(r#"[dependencies]
-resuma = "1.0.2"
+resuma = "1.3.1"
 resuma-flow = { path = "../resuma-flow" }  # monorepo
 tokio = { version = "1", features = ["full"] }"#)}
 

@@ -36,7 +36,12 @@ pub fn page(_req: FlowRequest) -> View {
                 <code>"cargo run"</code> " (from "
                 <code>"apps/resuma-docs"</code>", sibling to "
                 <code>"apps/resuma"</code>"; not under "
-                <code>"examples/"</code>")."
+                <code>"examples/"</code>"). "
+                "The header Theme control is a "
+                <code>"&lt;Popup&gt;"</code>
+                "; Search is a "
+                <code>"&lt;Modal&gt;"</code>
+                "."
             </p>
 
             <h2>"Prerequisites"</h2>
@@ -66,9 +71,9 @@ pub fn page(_req: FlowRequest) -> View {
             {code_block("cargo install resuma")}
             <p>
                 "API reference: "
-                <a href="https://docs.rs/resuma/1.0.2" target="_blank">"docs.rs/resuma"</a>
+                <a href="https://docs.rs/resuma" target="_blank">"docs.rs/resuma"</a>
                 " · "
-                <a href="https://docs.rs/resuma-macros/1.0.2" target="_blank">"docs.rs/resuma-macros"</a>
+                <a href="https://docs.rs/resuma-macros" target="_blank">"docs.rs/resuma-macros"</a>
             </p>
             <p>"From source while developing the monorepo:"</p>
             {code_block(r#"git clone https://github.com/GoldevLab/resuma
@@ -79,10 +84,22 @@ resuma --help"#)}
 
             <h2>"Install the AI skill (Cursor / Codex)"</h2>
             <p>
-                "Optional but recommended — teaches your editor Resuma patterns (signals, Show, Flow, server actions):"
+                "Optional but recommended — teaches your editor reactive " <code>"view!"</code>
+                ", Flow, " <code>"HtmlTheme"</code>
+                ", " <code>"Popup"</code>
+                " / " <code>"Modal"</code>
+                ", " <code>"SeoKit"</code>
+                ", and deploy (not Lambda/Workers):"
             </p>
             {code_block("resuma install skill")}
-            <p><a href="/docs/integrations/ai_assistant">"Full guide: skill vs MCP, Gemini, team setup →"</a></p>
+            <p>
+                "After a CLI upgrade, run " <code>"resuma install skill --force"</code>
+                " so the skill on disk picks up " <code>"HtmlTheme"</code>
+                ", " <code>"Popup"</code>
+                " / " <code>"Modal"</code>
+                ", and SEO traps. "
+                <a href="/docs/integrations/ai_assistant">"Full guide: skill vs MCP, Gemini, team setup →"</a>
+            </p>
 
             <h2>"Create an app using the CLI"</h2>
             <p>
@@ -185,23 +202,30 @@ async fn greet(name: String) -> String {
                 "Local dev needs "
                 <strong>"zero env vars"</strong> " — "
                 <code>"cargo run"</code> " and " <code>"resuma dev"</code> " work out of the box. "
-                "For Fly or Docker, scaffold with "
-                <code>"resuma new --template production"</code> " (includes "
-                <code>"fly.toml"</code> " with " <code>"RESUMA_ENV"</code> " and "
-                <code>"RESUMA_TRUST_PROXY"</code> "). Only add "
-                <code>"RESUMA_EXEC_API_KEY"</code> " if your app uses workers."
+                "Resuma is a Docker-friendly Rust process: bind " <code>"0.0.0.0"</code>
+                ", honor " <code>"PORT"</code> ", set " <code>"RESUMA_ENV=production"</code>
+                ". Walkthroughs for Fly.io, DigitalOcean App Platform, Droplets, Railway, and Render: "
+                <a href="/docs/cookbook/deploy">"Deploy"</a> "."
             </p>
-            <p><a href="/docs/security/environment">"Environment variables — local vs prod, Fly secrets, resuma doctor →"</a></p>
+            <p>
+                "Or scaffold " <code>"resuma new my-app --template production"</code>
+                " (" <code>"Dockerfile"</code> " + " <code>"fly.toml"</code> "). "
+                "Only add " <code>"RESUMA_EXEC_API_KEY"</code> " if the app uses workers. "
+                <a href="/docs/security/environment">"Environment variables →"</a>
+            </p>
 
             <h2>"Next steps"</h2>
             <ul>
+                <li><a href="/docs/cookbook/theme">"Theme — HtmlTheme + Popup palettes"</a></li>
+                <li><a href="/docs/components/popup">"Popup / Modal / Desktop UI"</a></li>
+                <li><a href="/docs/integrations/ai_assistant">"AI skill — resuma install skill"</a></li>
                 <li><a href="/docs/security/todo">"Todo example — full backend reference"</a></li>
                 <li><a href="/docs/security/environment">"Environment variables — deploy checklist"</a></li>
                 <li><a href="/docs/flow">"Resuma Flow — multi-page apps"</a></li>
                 <li><a href="/docs/exec">"Resuma OS — workers, queue, scheduler"</a></li>
                 <li><a href="/docs/package">"Package map"</a></li>
                 <li><a href="/docs/architecture">"Architecture"</a></li>
-                <li><a href="/docs/cookbook/docker">"Docker deploy"</a></li>
+                <li><a href="/docs/cookbook/deploy">"Deploy — Fly, DigitalOcean, AWS, Cloudflare"</a></li>
             </ul>
         </>
     }

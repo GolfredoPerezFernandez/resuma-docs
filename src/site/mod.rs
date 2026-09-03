@@ -1,8 +1,11 @@
 //! Shared UI for the Resuma documentation site.
 
+pub mod bundle_sizes;
+mod chrome;
 mod css;
 mod demo_actions;
 mod demo_shell;
+mod docs_copy;
 mod docs_search;
 mod exec_demo;
 mod exec_guide;
@@ -17,6 +20,7 @@ mod scheduler_demo;
 mod seo;
 mod server_demo;
 mod sidebar;
+mod theme;
 mod todo_demo;
 mod todo_security;
 pub use todo_security::install as install_security_middleware;
@@ -26,12 +30,24 @@ mod workers;
 
 pub use webhook_demo::inbox_handler;
 
+pub use chrome::{browse_docs_chip, docs_search_modal, explore_nav};
 pub use css::SITE_CSS;
+pub use docs_copy::{DocsCopyNavBtn, DocsCopyPageToolbar};
+pub use theme::{
+    provide_docs_theme, skip_link, theme_picker, THEME_BOOT, THEME_COOKIE, THEME_SHEET,
+};
+
+pub fn site_head() -> String {
+    format!("{THEME_BOOT}{THEME_SHEET}{SITE_CSS}")
+}
 pub use docs_search::search;
 pub use hero_bg::hero_particles_mount;
 pub use live_demos as demos;
 pub use pwa::config as pwa_config;
-pub use seo::{json_ld, site_description, site_title, site_url, view_transition_name};
+pub use seo::{
+    apply_page_seo, json_ld, json_ld_faq, seo_kit, site_description, site_title, site_url,
+    view_transition_name,
+};
 pub use sidebar::doc_sidebar;
 
 use resuma::prelude::*;
@@ -66,16 +82,6 @@ pub fn pillar_card(icon: &str, title: &str, body: &str) -> View {
     view! {
         <article class="pillar">
             <div class="pillar-icon">{icon.to_string()}</div>
-            <h3>{title.to_string()}</h3>
-            <p>{body.to_string()}</p>
-        </article>
-    }
-}
-
-pub fn pipeline_step(num: &str, title: &str, body: &str) -> View {
-    view! {
-        <article class="pipeline-step">
-            <span class="pipeline-num">{num.to_string()}</span>
             <h3>{title.to_string()}</h3>
             <p>{body.to_string()}</p>
         </article>
@@ -163,7 +169,7 @@ pub fn speed_bar(framework: &str, size: &str, width_pct: u8, highlight: bool) ->
                 <span class="speed-bar-size">{size.to_string()}</span>
             </div>
             <div class="speed-bar-track" aria-hidden="true">
-                <div class="speed-bar-fill" style={format!("width: {w}%")}></div>
+                <div class="speed-bar-fill" style={format!("--speed:{w}")}></div>
             </div>
         </div>
     }

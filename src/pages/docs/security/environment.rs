@@ -21,14 +21,14 @@ pub fn page(_req: FlowRequest) -> View {
                     <tr>
                         <th>"App type"</th>
                         <th>"Local dev"</th>
-                        <th>"Fly / Docker prod"</th>
+                        <th>"PaaS / Docker prod"</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>"SSR / Flow only"</strong><br /><span class="muted">"No "</span><code>".workers()"</code></td>
                         <td>"Nothing required"</td>
-                        <td><code>"RESUMA_ENV"</code> " + " <code>"RESUMA_TRUST_PROXY"</code><br /><span class="muted">"(already in scaffold "</span><code>"fly.toml"</code><span class="muted">")"</span></td>
+                        <td><code>"RESUMA_ENV"</code> " + " <code>"RESUMA_TRUST_PROXY"</code> " + " <code>"RESUMA_TRUSTED_PROXY_CIDRS"</code><br /><span class="muted">"(see "</span><a href="/docs/cookbook/deploy">"Deploy"</a><span class="muted">")"</span></td>
                     </tr>
                     <tr>
                         <td><strong>"+ Resuma OS workers"</strong><br /><span class="muted">"Queue, scheduler, graphs"</span></td>
@@ -55,7 +55,13 @@ pub fn page(_req: FlowRequest) -> View {
             </p>
             {code_block(r#"RESUMA_RATE_BACKEND=memory   # dev (default)
 RESUMA_RATE_BACKEND=disk     # prod (auto when RESUMA_ENV=production)
-RESUMA_DATA_DIR=/data/resuma # mount a persistent volume here on Fly/Docker"#)}
+RESUMA_DATA_DIR=/data        # must be writable by the process user (not /app/.resuma)"#)}
+            <p>
+                "In Docker, " <code>"mkdir /data && chown 65532:65532 /data"</code>
+                " before " <code>"USER 65532"</code>
+                ". If this directory is not writable, production rate limits fail and "
+                <code>"#[server]"</code> " actions return 500. A Fly volume is only needed if the data must survive a new machine."
+            </p>
             <p>
                 "Tune limits: " <code>"RESUMA_RATE_ACTIONS=120"</code> ", "
                 <code>"RESUMA_RATE_SUBMITS=60"</code>". "
@@ -80,12 +86,19 @@ RESUMA_DATA_DIR=/data/resuma # mount a persistent volume here on Fly/Docker"#)}
             <h3><code>"RESUMA_TRUST_PROXY=1"</code></h3>
             <p>
                 "Trust " <code>"X-Forwarded-For"</code> " and " <code>"X-Forwarded-Proto"</code> " from your reverse proxy "
-                "(Fly.io, nginx, Cloudflare). Needed for:"
+                "(Fly.io, DigitalOcean, nginx, Caddy, Cloudflare). Needed for:"
             </p>
             <ul>
                 <li>"Correct HTTPS detection → HSTS, Secure cookies"</li>
                 <li>"Real client IP for rate limiting"</li>
             </ul>
+            <p>
+                "You " <strong>"must"</strong> " also set " <code>"RESUMA_TRUSTED_PROXY_CIDRS"</code>
+                " (comma-separated). Without it, " <code>"serve()"</code> " exits. "
+                "Fly: " <code>"fdaa::/16"</code> ". "
+                "App Platform / Railway-style private fabric: start with " <code>"10.0.0.0/8"</code> ". "
+                "nginx on localhost: " <code>"127.0.0.1/32"</code> "."
+            </p>
             <p>
                 <strong>"When:"</strong> " only behind a reverse proxy. "
                 <strong>"Never"</strong> " on bare " <code>"cargo run"</code> " without a proxy in front."
@@ -127,9 +140,14 @@ fly secrets set RESUMA_EXEC_API_KEY=$(openssl rand -hex 32)"#)}
                         <td>"Same — included in production scaffold"</td>
                     </tr>
                     <tr>
+                        <td><code>"RESUMA_TRUSTED_PROXY_CIDRS"</code></td>
+                        <td>"No"</td>
+                        <td>"Required when trust-proxy is on. Fly " <code>"fdaa::/16"</code> " — see " <a href="/docs/cookbook/deploy">"Deploy"</a></td>
+                    </tr>
+                    <tr>
                         <td><code>"RESUMA_EXEC_API_KEY"</code></td>
                         <td>"No"</td>
-                        <td>"Must be a unique secret per app (security). Set via " <code>"fly secrets"</code> " or your platform's secret store"</td>
+                        <td>"Must be a unique secret per app. Set via " <code>"fly secrets"</code> " or your platform's secret store"</td>
                     </tr>
                     <tr>
                         <td><code>"CSRF, origin check, CSP"</code></td>
@@ -151,23 +169,29 @@ fly secrets set RESUMA_EXEC_API_KEY=$(openssl rand -hex 32)"#)}
                 "Ignored when " <code>"RESUMA_ENV=production"</code> " — production always requires a real key."
             </p>
 
-            <h2>"Production scaffold (Fly.io)"</h2>
+            <h2>"Production scaffold"</h2>
             <p>
-                <code>"resuma new my-app --template production"</code> " generates:"
+                <code>"resuma new my-app --template production"</code> " generates a Dockerfile and "
+                <code>"fly.toml"</code> ". "
+                "Full walkthroughs (Fly, DigitalOcean App Platform, Droplet, Railway, Render): "
+                <a href="/docs/cookbook/deploy">"Deploy"</a> "."
             </p>
             {code_block(r#"# fly.toml — already included
 [env]
   RESUMA_ENV = "production"
-  RESUMA_TRUST_PROXY = "1"
   RESUMA_ADDR = "0.0.0.0:8080"
+  RESUMA_TRUST_PROXY = "1"
+  RESUMA_TRUSTED_PROXY_CIDRS = "fdaa::/16"
+  RESUMA_DATA_DIR = "/data"
+  CARGO_MANIFEST_DIR = "/app"
 
 [http_service]
   internal_port = 8080
   force_https = true"#)}
-            <p>"Then deploy:"</p>
-            {code_block(r#"fly launch --no-deploy
+            <p>"Then deploy (" <code>"--ha=false"</code> " = one machine):"</p>
+            {code_block(r#"fly launch --no-deploy --ha=false
 fly secrets set RESUMA_EXEC_API_KEY=$(openssl rand -hex 32)   # only if using .workers()
-fly deploy"#)}
+fly deploy --ha=false"#)}
 
             <h2>"Full reference"</h2>
             <p>"Common server variables (CSRF, rate limits, CSP):"</p>
@@ -177,9 +201,10 @@ RESUMA_BODY_LIMIT=1048576
 RESUMA_RATE_ACTIONS=120
 RESUMA_RATE_SUBMITS=60
 RESUMA_RATE_BACKEND=memory|disk  # disk auto in production — no Redis
-RESUMA_DATA_DIR=/data/resuma     # rate-limit/, queue/, durable/ (exec)
-RESUMA_CSP=1                   # off in RESUMA_DEV unless RESUMA_CSP_DEV=1
-SITE_URL=https://your-app.fly.dev   # SEO / OG tags"#)}
+RESUMA_DATA_DIR=/data            # writable; rate-limit/, queue/, durable/
+CARGO_MANIFEST_DIR=/app          # Docker: public/ lives next to the binary
+RESUMA_CSP=1                   # off in RESUMA_DEV unless RESUMA_CSP_DEV=1; set 0 to embed YouTube/frames
+SITE_URL=https://your-app.fly.dev   # public origin (canonical, OG, sitemap, llms.txt); change when you attach a domain"#)}
 
             <p>"Resuma OS (exec layer):"</p>
             {code_block(r#"RESUMA_DATA_DIR=/data/resuma
@@ -195,7 +220,7 @@ RESUMA_WEBHOOK_SECRET=...      # HMAC for outbound webhooks"#)}
                 "Reports " <code>"RESUMA_ENV"</code> " status and project health. See also "
                 <a href="/docs/security/configure">"Configure security"</a> " (Rust " <code>"SecurityConfig"</code> "), "
                 <a href="/docs/exec/security">"Exec security"</a> ", and "
-                <a href="/docs/cookbook/docker">"Docker deploy"</a>"."
+                <a href="/docs/cookbook/deploy">"Deploy"</a>"."
             </p>
 
             <p>

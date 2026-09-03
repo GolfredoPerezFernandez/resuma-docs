@@ -11,7 +11,7 @@ pub fn config() -> FlowPwaConfig {
         background_color: "#eceff4".into(),
         start_url: "/".into(),
         scope: "/".into(),
-        cache_version: "4".into(),
+        cache_version: "10".into(),
         display: "standalone".into(),
         orientation: "any".into(),
         lang: "en".into(),

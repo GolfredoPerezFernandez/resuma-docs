@@ -1,6 +1,9 @@
 /**
- * Copy buttons for docs pages — main content only (not sidebar/header).
+ * Copy-for-AI helpers: page body, docs nav outline, and per-section buttons.
  */
+
+const COPY_UI =
+  ".docs-copy-toolbar, .docs-copy-nav, .docs-copy-section, .docs-section-head button, .docs-copy-hint";
 
 /** Mount Flow widgets outside dynamically injected exec panels (SSR dashboard only). */
 export async function initDocsFlow() {
@@ -15,7 +18,7 @@ export async function initDocsFlow() {
   if (!hasDashboard && !hasStaticGraph) return;
   try {
     if (window.__resumaCoreReady) await window.__resumaCoreReady;
-    const mod = await import("/_resuma/flow.js?v=1.2.14");
+    const mod = await import("/_resuma/flow.js?v=1.3.1");
     mod.initFlowWidgets(scope, {
       flush: false,
       exclude: "[data-docs-exec-panel]",
@@ -39,6 +42,7 @@ async function copyText(text: string, btn: HTMLButtonElement) {
   const value = text.trim();
   if (!value) return;
   try {
+    if (!navigator.clipboard?.writeText) throw new Error("clipboard");
     await navigator.clipboard.writeText(value);
     flashCopied(btn);
   } catch {
@@ -58,6 +62,87 @@ async function copyText(text: string, btn: HTMLButtonElement) {
   }
 }
 
+export async function copyDocsPage(btn: HTMLButtonElement) {
+  const main = document.querySelector<HTMLElement>(".docs-main");
+  if (!main) return;
+  await copyText(pageMarkdown(main), btn);
+}
+
+export async function copyDocsNav(btn: HTMLButtonElement) {
+  const sidebar = document.querySelector(".docs-sidebar");
+  if (!sidebar) return;
+  await copyText(navMarkdown(sidebar), btn);
+}
+
+function pageMarkdown(main: HTMLElement) {
+  const clone = main.cloneNode(true) as HTMLElement;
+  clone.querySelectorAll(COPY_UI).forEach((n) => n.remove());
+  clone.querySelectorAll("resuma-boundary").forEach((n) => n.remove());
+  clone.querySelectorAll(".docs-section-head").forEach((wrapper) => {
+    const h2 = wrapper.querySelector("h2");
+    if (h2) wrapper.replaceWith(h2);
+  });
+  const title = clone.querySelector("h1")?.textContent?.trim() || document.title;
+  clone.querySelector("h1")?.remove();
+  clone.querySelectorAll("pre").forEach((pre) => {
+    const p = document.createElement("p");
+    p.textContent = "```\n" + (pre.textContent ?? "").replace(/\n$/, "") + "\n```";
+    pre.replaceWith(p);
+  });
+  const body = blocksToText(clone).replace(/\n{3,}/g, "\n\n").trim();
+  return [`# ${title}`, `Source: ${location.href}`, "", body].join("\n");
+}
+
+function blocksToText(root: HTMLElement) {
+  const parts: string[] = [];
+  const walk = (el: Element) => {
+    if (el.matches(COPY_UI) || el.tagName === "SCRIPT" || el.tagName === "STYLE") return;
+    const tag = el.tagName;
+    if (tag === "H2" || tag === "H3" || tag === "H4") {
+      const hashes = tag === "H2" ? "##" : tag === "H3" ? "###" : "####";
+      const t = (el as HTMLElement).innerText.trim();
+      if (t) parts.push(`${hashes} ${t}`);
+      return;
+    }
+    if (tag === "P" || tag === "PRE" || tag === "TABLE" || tag === "UL" || tag === "OL" || tag === "BLOCKQUOTE" || tag === "DL") {
+      const t = (el as HTMLElement).innerText.trim();
+      if (t) parts.push(t);
+      return;
+    }
+    if (el.children.length) {
+      Array.from(el.children).forEach(walk);
+      return;
+    }
+    const t = (el as HTMLElement).innerText?.trim();
+    if (t) parts.push(t);
+  };
+  Array.from(root.children).forEach(walk);
+  return parts.join("\n\n");
+}
+
+function navMarkdown(sidebar: Element) {
+  const origin = location.origin;
+  const lines = [
+    "# Resuma documentation",
+    `Base: ${origin}`,
+    "Copy a page with the Copy page button, or open a URL below.",
+    "",
+  ];
+  sidebar.querySelectorAll(".docs-sidebar-section").forEach((section) => {
+    const heading = section.querySelector("h4")?.textContent?.trim();
+    if (heading) lines.push(`## ${heading}`);
+    section.querySelectorAll("a.docs-nav-link").forEach((a) => {
+      const label = a.textContent?.trim();
+      const href = a.getAttribute("href");
+      if (!label || !href) return;
+      const url = href.startsWith("http") ? href : new URL(href, origin).href;
+      lines.push(`- [${label}](${url})`);
+    });
+    lines.push("");
+  });
+  return lines.join("\n").trim();
+}
+
 function sectionText(h2: HTMLHeadingElement) {
   const lines = [h2.innerText.trim()];
   const wrapper = h2.closest(".docs-section-head");
@@ -73,22 +158,8 @@ function sectionText(h2: HTMLHeadingElement) {
   return lines.join("\n\n");
 }
 
-function pageText(main: HTMLElement) {
-  const clone = main.cloneNode(true) as HTMLElement;
-  clone
-    .querySelectorAll(
-      ".docs-copy-toolbar, .docs-section-head button, .docs-copy-section",
-    )
-    .forEach((n) => n.remove());
-  clone.querySelectorAll(".docs-section-head").forEach((wrapper) => {
-    const h2 = wrapper.querySelector("h2");
-    if (h2) wrapper.replaceWith(h2);
-  });
-  return clone.innerText.trim();
-}
-
 function teardown(main: HTMLElement) {
-  main.querySelectorAll(".docs-copy-toolbar").forEach((n) => n.remove());
+  main.querySelectorAll(".docs-copy-toolbar:not([data-docs-copy-ssr])").forEach((n) => n.remove());
   main.querySelectorAll(".docs-copy-live").forEach((n) => n.remove());
   main.querySelectorAll(".docs-section-head").forEach((wrapper) => {
     const h2 = wrapper.querySelector("h2");
@@ -204,17 +275,20 @@ export function initDocsCopy() {
 
   teardown(main);
 
-  const toolbar = document.createElement("div");
-  toolbar.className = "docs-copy-toolbar";
-  const pageBtn = document.createElement("button");
-  pageBtn.type = "button";
-  pageBtn.className = "btn btn-ghost btn-sm docs-copy-page";
-  pageBtn.textContent = "Copy page";
-  pageBtn.addEventListener("click", () => {
-    void copyText(pageText(main), pageBtn);
-  });
-  toolbar.appendChild(pageBtn);
-  main.insertBefore(toolbar, main.firstChild);
+  if (!main.querySelector(".docs-copy-page")) {
+    const toolbar = document.createElement("div");
+    toolbar.className = "docs-copy-toolbar";
+    const pageBtn = document.createElement("button");
+    pageBtn.type = "button";
+    pageBtn.className = "btn btn-ghost btn-sm docs-copy-page";
+    pageBtn.textContent = "Copy page";
+    pageBtn.setAttribute("aria-label", "Copy this page for an AI");
+    pageBtn.addEventListener("click", () => {
+      void copyDocsPage(pageBtn);
+    });
+    toolbar.appendChild(pageBtn);
+    main.insertBefore(toolbar, main.firstChild);
+  }
 
   main.querySelectorAll(".live-demo").forEach((section) => {
     const header = section.querySelector(".live-demo-header");

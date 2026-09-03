@@ -1,8 +1,8 @@
 use resuma::prelude::*;
 
 use crate::site::{
-    bench_row_full, code_block, compare_column, doc_link_card, feature_card, hero_particles_mount,
-    metric_item, payload_layer, pillar_card, pipeline_step, speed_bar,
+    bench_row_full, bundle_sizes, code_block, compare_column, doc_link_card, feature_card,
+    hero_particles_mount, metric_item, payload_layer, pillar_card, speed_bar,
 };
 
 pub fn page(_req: FlowRequest) -> View {
@@ -16,22 +16,22 @@ pub fn page(_req: FlowRequest) -> View {
                     <div>
                         <span class="hero-badge">
                             <span class="hero-badge-dot"></span>
-                            "v1.2.0 · Rust web framework"
+                            "v1.3.1 · Full Rust · UI + API + jobs"
                         </span>
                         <h1>
                             "The "
                             <span class="accent">"lightest"</span>
                             " path to instant interactivity in Rust"
                         </h1>
-                        <p class="hero-tagline">"907 bytes to resume. Zero bytes on static pages."</p>
+                        <p class="hero-tagline">
+                            {format!("{} to resume. Zero Resuma JS on static pages.", bundle_sizes::LOADER_GZIP)}
+                        </p>
                         <p class="hero-lead">
-                            "Resuma renders your UI once on the server, serialises signal state into HTML, "
-                            "and lazy-loads only the handlers you touch. No WASM hydration. No component re-execution. "
-                            "Full-stack Flow, server actions, and Resuma OS — one crate."
+                            "Resuma renders UI once on the server, serialises signals into HTML, and lazy-loads "
+                            "only the handlers you touch. No WASM hydration. Pages, APIs, auth, and jobs — one crate."
                         </p>
                         <div class="hero-actions">
                             <a href="/docs/getting_started" class="btn btn-primary">"Get Started"</a>
-                            <a href="/docs/benchmark" class="btn btn-ghost">"See the numbers"</a>
                             <a href="/docs" class="btn btn-ghost">"Docs with live demos"</a>
                         </div>
                         <p class="hero-note">
@@ -39,6 +39,13 @@ pub fn page(_req: FlowRequest) -> View {
                             " · "
                             <code>"resuma new my-app --template todo"</code>
                             " · no Node.js for app development"
+                        </p>
+                        <p class="hero-note hero-note-quiet">
+                            "This site’s Theme menu is a native "
+                            <code>"<Popup>"</code>
+                            "; Search is a "
+                            <code>"<Modal>"</code>
+                            "."
                         </p>
                     </div>
                     <div class="hero-panel">
@@ -55,29 +62,30 @@ pub fn page(_req: FlowRequest) -> View {
                             </div>
                             <div class="hero-payload-row hero-payload-row-accent">
                                 <span>"Interactive page — loader"</span>
-                                <strong>"907 B"</strong>
+                                <strong>{bundle_sizes::RESUMA_INITIAL.to_string()}</strong>
                             </div>
                             <div class="hero-payload-row">
-                                <span>"First click — handler chunk"</span>
-                                <strong>"5.08 KiB"</strong>
+                                <span>"First click — loader + core + handler"</span>
+                                <strong>{bundle_sizes::RESUMA_FIRST.to_string()}</strong>
                             </div>
                             <div class="hero-payload-row hero-payload-row-muted">
                                 <span>"Next.js counter (default scaffold)"</span>
-                                <strong>"142 KiB"</strong>
+                                <strong>{bundle_sizes::NEXT_GZIP.to_string()}</strong>
                             </div>
                             <p class="hero-panel-caption">
-                                <strong>"156× smaller"</strong>
-                                " initial payload than a default Next.js app — measured on the same counter UX."
+                                <strong>{format!("{} smaller", bundle_sizes::SMALLER_THAN_NEXT)}</strong>
+                                " initial payload than a default Next.js app — same counter UX. "
+                                <a href="/docs/benchmark">"Methodology →"</a>
                             </p>
                         </div>
                     </div>
                 </section>
 
                 <div class="metrics-bar">
-                    {metric_item("907 B", "loader (gzip)")}
-                    {metric_item("0 B", "static pages")}
-                    {metric_item("5.08 KiB", "first interaction")}
-                    {metric_item("~3 KiB", "runtime core")}
+                    {metric_item(bundle_sizes::LOADER_GZIP, "loader (gzip)")}
+                    {metric_item(bundle_sizes::RESUMA_STATIC, "static pages")}
+                    {metric_item(bundle_sizes::RESUMA_FIRST, "first interaction")}
+                    {metric_item(bundle_sizes::CORE_GZIP, "runtime core")}
                     {metric_item("1", "cargo dependency")}
                 </div>
             </div>
@@ -103,50 +111,50 @@ pub fn page(_req: FlowRequest) -> View {
                 </p>
                 <div class="payload-stack">
                     {payload_layer(
-                        "SSR HTML + signal state",
+                        "SSR HTML + state",
                         "Server",
-                        "View tree, data-r-on:* hooks, and <script type=\"resuma/state\"> — ready before any JS runs.",
+                        "View tree, data-r-on hooks, and resumability state — ready before any JS runs.",
                         false,
                     )}
                     {payload_layer(
                         "Loader",
-                        "907 B gzip",
-                        "Bootstraps signals from the serialised payload. Enough for static-looking pages to feel alive.",
+                        bundle_sizes::LOADER_GZIP,
+                        "Bootstraps signals from SSR. Enough for the page to feel alive.",
                         true,
                     )}
                     {payload_layer(
                         "Core runtime",
-                        "~3 KiB gzip",
-                        "Fine-grained DOM updates, Show/For, effects — fetched on first interaction or prefetch.",
+                        bundle_sizes::CORE_GZIP,
+                        "DOM updates, Show/For, effects — fetched on first interaction or prefetch.",
                         false,
                     )}
                     {payload_layer(
                         "Handler chunks",
                         "Per component",
-                        "onClick and friends live in /_resuma/handler/{Component}.js — pay only for what users touch.",
+                        "onClick lives in a handler chunk — you pay only for what users touch.",
                         false,
                     )}
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section section-cv">
                 <p class="section-eyebrow">"Measured"</p>
                 <h2 class="section-title">"Counter page — initial load (gzip)"</h2>
                 <p class="section-sub">
                     "Same UX everywhere: SSR heading + one increment button. "
-                    "Bar width is relative to Next.js (142 KiB). "
-                    <a href="/docs/benchmark">"Full methodology →"</a>
+                    "Bar width is relative to Next.js (" {bundle_sizes::NEXT_GZIP.to_string()} ")."
                 </p>
                 <div class="speed-chart">
-                    {speed_bar("Resuma", "907 B", 1, true)}
+                    {speed_bar("Resuma", bundle_sizes::RESUMA_INITIAL, 1, true)}
                     {speed_bar("Qwik", "1.96 KiB", 1, false)}
                     {speed_bar("SolidStart", "16.75 KiB", 12, false)}
                     {speed_bar("SvelteKit", "27.71 KiB", 19, false)}
                     {speed_bar("React (Vite)", "57.99 KiB", 41, false)}
                     {speed_bar("Leptos", "79.02 KiB", 56, false)}
-                    {speed_bar("Next.js", "142.43 KiB", 100, false)}
+                    {speed_bar("Next.js", bundle_sizes::NEXT_GZIP, 100, false)}
                 </div>
                 <div class="bench-wrap">
+                    <p class="bench-caption">"Initial load, first interaction, and static-page JS — gzip"</p>
                     <table class="bench">
                         <thead>
                             <tr>
@@ -157,9 +165,9 @@ pub fn page(_req: FlowRequest) -> View {
                             </tr>
                         </thead>
                         <tbody>
-                            {bench_row_full("Resuma", "907 B", "5.08 KiB", "0 B", true)}
+                            {bench_row_full("Resuma", bundle_sizes::RESUMA_INITIAL, bundle_sizes::RESUMA_FIRST, bundle_sizes::RESUMA_STATIC, true)}
                             {bench_row_full("Leptos", "79.02 KiB", "79.02 KiB", dash, false)}
-                            {bench_row_full("Next.js", "142.43 KiB", "142.43 KiB", dash, false)}
+                            {bench_row_full("Next.js", bundle_sizes::NEXT_GZIP, bundle_sizes::NEXT_GZIP, dash, false)}
                             {bench_row_full("React (Vite)", "57.99 KiB", "57.99 KiB", dash, false)}
                             {bench_row_full("Astro", "57.76 KiB", "57.76 KiB", dash, false)}
                             {bench_row_full("SvelteKit", "27.71 KiB", "27.71 KiB", dash, false)}
@@ -176,7 +184,7 @@ pub fn page(_req: FlowRequest) -> View {
                 </p>
             </section>
 
-            <section class="section section-alt">
+            <section class="section section-alt section-cv">
                 <p class="section-eyebrow">"Try it in the docs"</p>
                 <h2 class="section-title">"Live demos — inside the documentation"</h2>
                 <p class="section-sub">
@@ -209,7 +217,7 @@ pub fn page(_req: FlowRequest) -> View {
                         "LIVE",
                     )}
                     {doc_link_card(
-                        "/docs/components/show",
+                        "/docs/components/control_flow",
                         "Control flow",
                         "Show, For, Match — conditional UI with lazy boundaries.",
                         "LIVE",
@@ -223,57 +231,50 @@ pub fn page(_req: FlowRequest) -> View {
                 </div>
             </section>
 
-            <section class="section">
-                <p class="section-eyebrow">"Positioning"</p>
-                <h2 class="section-title">"Resumability, not hydration"</h2>
-                <p class="section-sub">"Three ways to ship interactive UI after the first paint."</p>
+            <section class="section section-cv">
+                <p class="section-eyebrow">"One binary"</p>
+                <h2 class="section-title">"Frontend speed. Backend included."</h2>
+                <p class="section-sub">
+                    "Qwik, React, Angular, and Next.js still need a second stack for APIs, jobs, and auth. "
+                    "Leptos hydrates with WASM. Resuma resumes a few kilobytes of JS — and the rest is Rust: "
+                    "typed actions, file routes, SQL, sessions, queues, cron, and WebSockets."
+                </p>
                 <div class="compare-3">
                     {compare_column(
-                        "Qwik",
-                        "Resumable JS — tiny preloader, lazy chunks on interaction. Closest mental model to Resuma.",
+                        "Hydration stacks",
+                        "Ship a client runtime (React, Angular, Next, Leptos WASM). Interact later. Your API lives in another service.",
                         false,
                     )}
                     {compare_column(
-                        "Leptos",
-                        "Rust SSR + WASM hydration and optional islands.",
+                        "Qwik",
+                        "Resumable JS — closest mental model. Still a JavaScript framework; workers and APIs are a separate deploy.",
                         false,
                     )}
                     {compare_column(
                         "Resuma",
-                        "Rust SSR + resumability + lazy JS handlers — no WASM by default.",
+                        "Resumable Rust SSR + lazy JS handlers. Pages, RPC, jobs, and realtime in one cargo install. No WASM by default.",
                         true,
                     )}
                 </div>
             </section>
 
-            <section class="section section-alt">
+            <section class="section section-alt section-cv">
                 <p class="section-eyebrow">"Performance model"</p>
                 <h2 class="section-title">"Interactive from the first click"</h2>
                 <p class="section-sub">"The client never re-runs your component tree. State and handlers are already in the HTML."</p>
                 <div class="pillars">
-                    {pillar_card("⚡", "Ultralight by design", "907 B loader, ~3 KiB core, per-handler chunks — not a monolithic client bundle.")}
-                    {pillar_card("🦀", "Full Rust stack", "#[server] RPC, #[submit] forms, and #[load] data — axum-native, no adapter boilerplate.")}
+                    {pillar_card("⚡", "HTML first", "Static pages ship no Resuma JS. Interactive pages resume a loader; core and handlers arrive on the click that needs them.")}
+                    {pillar_card("🦀", "Full Rust stack", "#[server] RPC, #[submit] forms, #[load] data, workers, queues — axum-native. One process, no adapter maze.")}
                     {pillar_card("📋", "Progressive enhancement", "<Form submit> works as plain HTML POST before JS loads; runtime enhances in place.")}
-                    {pillar_card("🧩", "Resumable by default", "Every #[component] is a lazy boundary. Handlers externalise to /_resuma/handler/{Component}.js.")}
+                    {pillar_card("🧩", "Resumable by default", "Every #[component] is a lazy boundary. Handlers live in /_resuma/handler/{Component}.js.")}
                 </div>
             </section>
 
-            <section class="section">
-                <p class="section-eyebrow">"Under the hood"</p>
-                <h2 class="section-title">"How does it work?"</h2>
-                <p class="section-sub">"One SSR pass. One resumability payload. Lazy execution on the client."</p>
-                <div class="pipeline">
-                    {pipeline_step("1", "SSR renders once", "Rust walks the View tree, emits HTML + data-r-on:* attributes, and serialises signals into <script type=\"resuma/state\">.")}
-                    {pipeline_step("2", "Payload travels light", "Handler sources move to lazy chunks. computed! / effect! / debounce! replay on the client via rs2js.")}
-                    {pipeline_step("3", "Browser resumes", "Loader bootstraps signals. Core loads on first interaction. Handlers fetch on demand — or prefetch in viewport.")}
-                </div>
-            </section>
-
-            <section class="section section-alt">
+            <section class="section section-cv">
                 <div class="showcase">
                     <div class="showcase-copy">
                         <p class="section-eyebrow">"Components"</p>
-                        <h3>"Write UI once — on the server"</h3>
+                        <h2>"Write UI once — on the server"</h2>
                         <p>"view! with JSX-like syntax, fine-grained signals, and onClick handlers that compile to lazy JavaScript."</p>
                         <ul class="showcase-list">
                             <li>"signal for reactive state"</li>
@@ -299,11 +300,11 @@ fn Counter() {
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section section-alt section-cv">
                 <div class="showcase showcase-reverse">
                     <div class="showcase-copy">
                         <p class="section-eyebrow">"Resuma OS"</p>
-                        <h3>"Durable workers — self-hosted"</h3>
+                        <h2>"Durable workers — self-hosted"</h2>
                         <p>"#[worker] functions, disk-backed queues, cron scheduler, and an ops dashboard. No Redis, no external orchestrator — same binary as your app."</p>
                         <ul class="showcase-list">
                             <li>"Execution graphs with SSE event streams"</li>
@@ -330,13 +331,17 @@ async fn enrich(input: Input, ctx: WorkerContext) -> Result<Value> {
                 </div>
             </section>
 
-            <section class="section section-alt">
+            <section class="section section-alt section-cv">
                 <p class="section-eyebrow">"Why Resuma?"</p>
                 <h2 class="section-title">"Everything you need for modern SSR"</h2>
                 <p class="section-sub">"Resumable SSR in Rust — one install, progressive enhancement, full-stack Flow when you need it."</p>
                 <div class="grid-3">
                     {feature_card("🌊", "Resuma Flow", "File-based pages, #[load], #[submit], layouts, middleware — built into the same crate.")}
-                    {feature_card("📄", "Static export", "resuma build --static-export scaffolds HTML from src/pages/ for edge-friendly deploys.")}
+                    <a href="/docs/cookbook/deploy" class="card">
+                        <div class="card-icon">"🚀"</div>
+                        <h3>"Deploy"</h3>
+                        <p>"Same Docker image on Fly, DigitalOcean, AWS App Runner, or a VM. Not Lambda, not Workers."</p>
+                    </a>
                     {feature_card("🔧", "Dev experience", "resuma dev with HMR WebSocket, resuma new templates (basic, todo, flow, production).")}
                     {feature_card("🔗", "JS bridge", "view! translates Rust closures via rs2js. js!{} for escape hatches when you need raw client code.")}
                     {feature_card("🏝️", "Islands (optional)", "#[island(load = \"visible\")] for heavy widgets — most UI only needs #[component].")}
@@ -344,7 +349,7 @@ async fn enrich(input: Input, ctx: WorkerContext) -> Result<Value> {
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section section-cv">
                 <p class="section-eyebrow">"One package"</p>
                 <h2 class="section-title">"Resuma¹ + Flow²"</h2>
                 <p class="section-sub">"Two layers, one dependency. Core stays stable; Flow adds routing, data loading, and forms."</p>
@@ -355,7 +360,7 @@ async fn enrich(input: Input, ctx: WorkerContext) -> Result<Value> {
                         <ul>
                             <li>"view!, #[component], signal"</li>
                             <li>"computed! / effect! / debounce!"</li>
-                            <li>"#[server], ResumaApp, ~3KB runtime"</li>
+                            <li>{format!("#[server], ResumaApp, {} runtime", bundle_sizes::CORE_GZIP)}</li>
                         </ul>
                     </article>
                     <div class="package-plus">"+"</div>
@@ -371,35 +376,35 @@ async fn enrich(input: Input, ctx: WorkerContext) -> Result<Value> {
                 </div>
             </section>
 
-            <section class="section section-alt">
+            <section class="section section-alt section-cv">
                 <p class="section-eyebrow">"AI assistants"</p>
                 <h2 class="section-title">"Build faster with Cursor, Codex, or Gemini"</h2>
-                <p class="section-sub">"Install the Resuma agent skill in one command — reactive view! rules, Flow patterns, server actions, and debugging checklists built in."</p>
-                <div class="cta-install" style="margin: 1rem auto; max-width: 32rem;">"resuma install skill"</div>
-                <p style="text-align: center;">
+                <p class="section-sub">"Install the Resuma agent skill in one command — view!, HtmlTheme, Popup/Modal, Flow, SeoKit, and the debugging checklist. After a CLI upgrade: resuma install skill --force."</p>
+                <div class="cta-install cta-install-block">"resuma install skill"</div>
+                <p class="section-center">
                     <a href="/docs/integrations/ai_assistant" class="btn btn-ghost">"AI assistant guide →"</a>
                 </p>
             </section>
 
-            <section class="section">
+            <section class="section section-cv">
                 <p class="section-eyebrow">"Integrations"</p>
                 <h2 class="section-title">"Database, auth, and tooling"</h2>
                 <p class="section-sub">"Integration guides for SQLx, Turso, auth, validation, i18n, and E2E testing."</p>
                 <div class="grid-3">
-                    <a href="/docs/integrations/sqlx" class="card" style="text-decoration: none;">
+                    <a href="/docs/integrations/sqlx" class="card">
                         <h3>"SQLx"</h3>
                         <p>"Type-safe SQL in #[load] and #[submit]."</p>
                     </a>
-                    <a href="/docs/integrations/turso" class="card" style="text-decoration: none;">
+                    <a href="/docs/integrations/turso" class="card">
                         <h3>"Turso"</h3>
                         <p>"Edge libSQL — file in dev, remote in prod."</p>
                     </a>
-                    <a href="/docs/integrations/auth" class="card" style="text-decoration: none;">
+                    <a href="/docs/integrations/auth" class="card">
                         <h3>"Auth"</h3>
                         <p>"Sessions and middleware for protected routes."</p>
                     </a>
                 </div>
-                <p style="text-align: center; margin-top: 1rem;">
+                <p class="section-links">
                     <a href="/docs/integrations">"All integrations"</a>
                     " · "
                     <a href="/docs/search">"Search docs"</a>

@@ -54,7 +54,10 @@ pub fn page(_req: FlowRequest) -> View {
             <p>
                 "Files under " <code>"{CARGO_MANIFEST_DIR}/public"</code> " are served at the same URL path "
                 "(e.g. " <code>"public/images/logo.png"</code> " → " <code>"/images/logo.png"</code> "). "
-                "No " <code>"static_asset"</code> " boilerplate required. Paths are added to the PWA precache list."
+                "No " <code>"static_asset"</code> " boilerplate required. Paths are added to the PWA precache list. "
+                "In Docker, " <code>"COPY"</code> " that folder into the image and set "
+                <code>"CARGO_MANIFEST_DIR=/app"</code> " — see "
+                <a href="/docs/cookbook/deploy">"Deploy"</a> "."
             </p>
             {code_block(r#"FlowApp::new()
     .with_public_dir("public")   // optional — this is the default root
@@ -75,6 +78,16 @@ pub fn page(_req: FlowRequest) -> View {
             <p>
                 "This docs site: "
                 <a href="/manifest.webmanifest" target="_blank">"/manifest.webmanifest"</a>
+            </p>
+
+            <h2>"Online + storage on the client"</h2>
+            <p>
+                "SSR cannot read " <code>"localStorage"</code> " or "
+                <code>"navigator.onLine"</code>
+                ". Use " <code>"__resuma.online()"</code> " and "
+                <code>"__resuma.storage"</code> " from " <code>"js!"</code>
+                " — they no-op when storage is blocked. See "
+                <a href="/docs/components/desktop_ui">"Desktop UI"</a> "."
             </p>
         </>
     }

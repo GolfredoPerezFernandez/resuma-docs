@@ -53,8 +53,10 @@ view! {
     await __resuma.navigate(__resuma.buildUrl("/book", { fecha: el.value }));
 }}"#)}
             <p>
-                "Always read form values from " <code>"event.target"</code> " in "
-                <code>"js!"</code> " handlers — " <code>"event.currentTarget"</code> " is unreliable in async code."
+                "On an input, " <code>"event.target"</code> " is the control. "
+                <code>"event.currentTarget"</code> " is the node that declared the handler "
+                "(" <code>"data-r-on:*"</code> ") — use it for " <code>"dataset"</code> " and "
+                <code>"closest()"</code> " on buttons whose children were clicked."
             </p>
 
             <h2>"When to use js!"</h2>
