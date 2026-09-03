@@ -115,7 +115,7 @@ SITE_URL = "https://docs.example.com""#)}
                 " and omits it from the sitemap."
             </p>
             {code_block(r#"set_page_robots("noindex, follow");
-FlowApp::new().with_sitemap_exclude(["/docs/search", "/old-alias"])"#)}
+    FlowApp::new().with_sitemap_exclude(["/docs/search", "/old-alias"])"#)}
 
             <h2>"Redirect aliases, don't duplicate"</h2>
             <p>
@@ -215,7 +215,7 @@ set_page_json_ld(faq_graph(&origin, &[
                 ". That is analytics, not ranking. This docs site does not load third-party tags."
             </p>
             {code_block(r#"// Optional — skip unless you actually use the pixel
-SeoKit::new("My App", &origin).with_meta_pixel("1234567890");"#)}
+    SeoKit::new("My App", &origin).with_meta_pixel("1234567890");"#)}
         </>
     }
 }

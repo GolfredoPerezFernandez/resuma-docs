@@ -57,7 +57,8 @@ view! {
                 <code>"set_page_theme(\"slate\")"</code>
                 " in a page or " <code>"#[load]"</code>
                 " sets SSR " <code>"html[data-theme]"</code>
-                " for that response. After the user picks a palette, the boot cookie wins on the next full load."
+                " for that response and marks the document " <code>"data-theme-forced"</code>
+                ". The boot script keeps that palette instead of the visitor's stored pick, and SPA navigation restores the pick when they leave the page. Without a forced theme the cookie / localStorage pick wins."
             </p>
 
             <h2>"SPA must not clobber a live pick"</h2>
@@ -67,6 +68,7 @@ view! {
                 " from the fetched document (RTL survives) but "
                 <strong>"does not"</strong>
                 " copy " <code>"data-theme"</code>
+                " — except from a page marked " <code>"data-theme-forced"</code>
                 ". Do not wrap the theme swap in " <code>"document.startViewTransition"</code>
                 " while a popover is open — Chromium skips the update callback."
             </p>

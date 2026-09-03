@@ -213,8 +213,9 @@ view! {
 - Selected chip: `[aria-pressed="true"]` / `.r-theme-on`. The boot toggles them. **Do not** bake a selected class from the SSR cookie (it stays after a live swap).
 - Cookie + `localStorage`; HTTPS sets `Secure`. Ids: `[A-Za-z0-9_-]`, max 48. `HtmlTheme::new(["light","dark"])` infers dark `color-scheme` without `.dark()`.
 - `prefers-color-scheme` listener when nothing is stored.
-- `set_page_theme("slate")` overrides SSR for that response. `provide_theme` / `theme_css_vars` are **one-shot inline snapshots** — they do not follow `html[data-theme]`.
-- SPA NavLink **must not copy** `data-theme` from prefetch HTML (the prefetch can be older than a palette pick). `dir` **is** copied so RTL survives.
+- `set_page_theme("slate")` forces the palette for that response: SSR emits `data-theme-forced`, the boot keeps it over the visitor's stored pick, and SPA nav restores the pick on leaving. `provide_theme` / `theme_css_vars` are **one-shot inline snapshots** — they do not follow `html[data-theme]`.
+- SPA NavLink **must not copy** `data-theme` from prefetch HTML (the prefetch can be older than a palette pick) — the only exception is a `data-theme-forced` page. `dir` **is** copied so RTL survives.
+- `<details open>` / `<dialog open>` are boolean attrs, not events; lowercase `on*` only becomes a handler for real DOM event names (`onclick`, `ontoggle`). Custom events: `on:my-event`.
 - Skip View Transitions while `:popover-open` / `dialog[open]`, and on soft `invalidate` / `loader_poll` (`!pushState && !scroll`).
 
 ### Desktop helpers (`__resuma.*`)
