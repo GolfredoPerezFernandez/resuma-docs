@@ -71,6 +71,19 @@ resuma build --static-export --out dist --base-url https://example.com"#)}
                 <a href="/docs/cookbook/deploy">"Deploy"</a> "."
             </p>
 
+            <h2>"resuma theme"</h2>
+            <p>
+                "Print official " <code>"html[data-theme]"</code>
+                " palettes so you can paste them into your app. Same CSS as the Theme menu and "
+                <a href="/themes.css" download="resuma-themes.css">"/themes.css"</a>
+                ". Add more blocks as you invent themes. "
+                <a href="/docs/cookbook/theme">"Theme cookbook"</a> "."
+            </p>
+            {code_block(r#"resuma theme
+resuma theme --id midnight
+resuma theme --out public/themes.css
+resuma theme --id forest --out public/forest.css"#)}
+
             <h2>"resuma routes"</h2>
             {code_block(r#"resuma routes --path src/pages
     resuma routes --generate --path src/pages"#)}

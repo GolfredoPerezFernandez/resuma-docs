@@ -361,7 +361,7 @@ pub const ENTRIES: &[DocEntry] = &[
     DocEntry {
         title: "Theme",
         href: "/docs/cookbook/theme",
-        keywords: "dark mode css variables toggle HtmlTheme ThemeSwitch data-r-theme data-theme palette",
+        keywords: "dark mode css variables toggle HtmlTheme ThemeSwitch data-r-theme data-theme palette copy theme CSS official palettes resuma theme",
     },
     DocEntry {
         title: "Streaming loaders",

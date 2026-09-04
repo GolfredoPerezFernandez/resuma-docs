@@ -34,11 +34,11 @@ pub use chrome::{browse_docs_chip, docs_search_modal, explore_nav};
 pub use css::SITE_CSS;
 pub use docs_copy::{DocsCopyNavBtn, DocsCopyPageToolbar};
 pub use theme::{
-    provide_docs_theme, skip_link, theme_picker, THEME_BOOT, THEME_COOKIE, THEME_SHEET,
+    provide_docs_theme, skip_link, theme_picker, theme_sheet, THEME_BOOT, THEME_COOKIE,
 };
 
 pub fn site_head() -> String {
-    format!("{THEME_BOOT}{THEME_SHEET}{SITE_CSS}")
+    format!("{THEME_BOOT}{}{SITE_CSS}", theme_sheet())
 }
 pub use docs_search::search;
 pub use hero_bg::hero_particles_mount;

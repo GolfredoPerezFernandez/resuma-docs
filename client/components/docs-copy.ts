@@ -3,7 +3,7 @@
  */
 
 const COPY_UI =
-  ".docs-copy-toolbar, .docs-copy-nav, .docs-copy-section, .docs-section-head button, .docs-copy-hint";
+  ".docs-copy-toolbar, .docs-copy-nav, .docs-copy-section, .docs-section-head button, .docs-copy-hint, .theme-copy-row, .theme-copy-btn";
 
 /** Mount Flow widgets outside dynamically injected exec panels (SSR dashboard only). */
 export async function initDocsFlow() {
@@ -72,6 +72,54 @@ export async function copyDocsNav(btn: HTMLButtonElement) {
   const sidebar = document.querySelector(".docs-sidebar");
   if (!sidebar) return;
   await copyText(navMarkdown(sidebar), btn);
+}
+
+async function themeCssSource(): Promise<string> {
+  const embedded =
+    document.getElementById("resuma-theme-css-src")?.textContent ?? "";
+  if (embedded.trim()) return embedded;
+  try {
+    const res = await fetch("/themes.css", { credentials: "same-origin" });
+    if (!res.ok) return "";
+    return await res.text();
+  } catch {
+    return "";
+  }
+}
+
+function themeBlock(css: string, id: string): string {
+  const needle = `html[data-theme="${id}"]`;
+  const start = css.indexOf(needle);
+  if (start < 0) return "";
+  const from = css.slice(start);
+  const next = from.indexOf("html[data-theme=", needle.length);
+  return (next < 0 ? from : from.slice(0, next)).trim();
+}
+
+/** Copy official `html[data-theme]` CSS — current palette or every official one. */
+export async function copyThemeCss(
+  btn: HTMLButtonElement,
+  mode: "current" | "all" = "all",
+) {
+  const all = await themeCssSource();
+  if (!all.trim()) {
+    flashCopied(btn, "Copy failed");
+    return;
+  }
+  if (mode === "all") {
+    await copyText(all, btn);
+    return;
+  }
+  const id =
+    document.documentElement.getAttribute("data-theme") ||
+    btn.getAttribute("data-theme-id") ||
+    "paper";
+  const block = themeBlock(all, id);
+  if (!block) {
+    flashCopied(btn, "Copy failed");
+    return;
+  }
+  await copyText(block, btn);
 }
 
 function pageMarkdown(main: HTMLElement) {

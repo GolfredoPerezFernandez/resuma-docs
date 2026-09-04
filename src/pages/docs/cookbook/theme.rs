@@ -19,6 +19,37 @@ pub fn page(_req: FlowRequest) -> View {
 
             {crate::site::demos::cookbook_theme()}
 
+            <h2>"Copy our palettes"</h2>
+            <p>
+                "The Theme menu can copy the CSS you are looking at — one palette or every official one — or "
+                <a href="/themes.css" download="resuma-themes.css">"download themes.css"</a>
+                ". From the CLI: " <code>"resuma theme"</code>
+                " prints the same stylesheet; " <code>"resuma theme --id midnight --out public/themes.css"</code>
+                " writes one file. Apps also serve " <code>"GET /_resuma/themes.css"</code>
+                " after you upgrade. Add more " <code>"html[data-theme=\"…\"]"</code>
+                " blocks as you invent themes; wire them with "
+                <code>"HtmlTheme::official()"</code>
+                " or " <code>"HtmlTheme::new([\"paper\", \"your-theme\"]).dark([\"your-theme\"])"</code> "."
+            </p>
+            <div class="theme-copy-row">
+                <button
+                    type="button"
+                    class="btn btn-ghost theme-copy-btn"
+                    data-theme-copy="current"
+                    aria-label="Copy CSS for the active theme"
+                >
+                    "Copy this theme CSS"
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-ghost theme-copy-btn"
+                    data-theme-copy="all"
+                    aria-label="Copy CSS for every official palette"
+                >
+                    "Copy all palettes"
+                </button>
+            </div>
+
             <h2>"Live palettes (whole app)"</h2>
             <p>
                 "Do not put the switcher " <code>"onClick"</code>
@@ -26,6 +57,8 @@ pub fn page(_req: FlowRequest) -> View {
                 <code>"with_html_theme"</code>
                 " injects a blocking head script that listens for "
                 <code>"[data-r-theme]"</code>
+                ". Copy CSS uses the same idea: " <code>"[data-theme-copy]"</code>
+                " on the chrome boot, not a layout " <code>"js!"</code>
                 ". Style the selected chip with "
                 <code>"[aria-pressed=true]"</code>
                 " or "
@@ -34,8 +67,7 @@ pub fn page(_req: FlowRequest) -> View {
             </p>
             {code_block(r##"FlowApp::new()
     .with_html_theme(
-        HtmlTheme::new(["paper", "slate", "midnight"])
-            .dark(["midnight"])
+        HtmlTheme::official() // paper, slate, midnight, ember, aurora, forest
             .cookie("my_app_theme")       // default: resuma_theme
             .storage_key("my-app-theme")  // default: resuma-theme
     )
